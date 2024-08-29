@@ -43,19 +43,7 @@ def generate_test_description():
     # change the data as it passes through
     path_to_test = os.path.dirname(__file__)
 
-    talker_node = launch_ros.actions.Node(
-        executable=sys.executable,
-        arguments=[os.path.join(path_to_test, 'talker.py')],
-        additional_env={'PYTHONUNBUFFERED': '1'},
-        remappings=[('chatter', 'talker_chatter')]
-    )
-
-    listener_node = launch_ros.actions.Node(
-        executable=sys.executable,
-        arguments=[os.path.join(path_to_test, 'listener.py')],
-        additional_env={'PYTHONUNBUFFERED': '1'},
-        remappings=[('chatter', 'listener_chatter')]
-    )
+    talker_node = launch_ros.actions.
 
     return (
         launch.LaunchDescription([
