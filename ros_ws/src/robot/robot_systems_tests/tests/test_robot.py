@@ -44,6 +44,7 @@ def generate_test_description():
 
 
 class TestRobotSystem(unittest.TestCase):
+    
     @classmethod
     def setUpClass(cls):
         # Initialize the ROS context for the test node
@@ -57,21 +58,21 @@ class TestRobotSystem(unittest.TestCase):
     def setUp(self):
         # Create a ROS node for tests
         self.node = rclpy.create_node('robot_tester_node')
+        self.service_timeout = 2
 
     def tearDown(self):
         self.node.destroy_node()
 
     def test_set_mode(self):
-        timeout = 5
         client = self.node.create_client(mavros_msgs.srv.SetMode, '/mavros/set_mode')
         self.node.get_logger().info("Waiting for service to be available...")
         accum_time = 0
         while not client.wait_for_service(timeout_sec=1.0):
             print('service not available, waiting again...')
             accum_time += 1
-            if accum_time > timeout:
+            if accum_time > self.service_timeout:
                 print('service not available, aborting test...')
-                assert False
+                self.assertTrue(False)
         request = mavros_msgs.srv.SetMode.Request()
         request.custom_mode = "GUIDED"
         print("Sending request to set mode to GUIDED") 
