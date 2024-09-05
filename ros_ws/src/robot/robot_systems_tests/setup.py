@@ -11,16 +11,16 @@ data_files=[
 ('share/ament_index/resource_index/packages',
         ['resource/' + package_name]),
 ],
- install_requires=['setuptools'],
+ install_requires=['setuptools', 'launch', 'launch_ros', 'launch_testing', 'launch_testing_ros', 'pytest'],
  zip_safe=True,
  maintainer='TODO',
  maintainer_email='TODO',
  description='TODO: Package description',
  license='TODO: License declaration',
  tests_require=['pytest'],
- entry_points={
-     'console_scripts': [
-             'my_node = my_py_pkg.my_node:main'
-     ],
-   },
+#  entry_points={
+#      'console_scripts': [
+#              'my_node = my_py_pkg.my_node:main'
+#      ],
+#    },
 )

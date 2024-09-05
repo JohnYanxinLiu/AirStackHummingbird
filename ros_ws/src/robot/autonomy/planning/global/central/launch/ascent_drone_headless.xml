@@ -49,8 +49,4 @@
   <node name="fixed_trajectory_generator" pkg="trajectory_library" exec="fixed_trajectory_generator.py" output="screen" />
   <include file="$(find-pkg-share takeoff_landing_planner)/launch/takeoff_landing_planner.xml" />
   <include file="$(find-pkg-share trajectory_controller)/launch/trajectory_controller.xml" />
-
-  <!-- GUI -->
-  <node name="rqt" pkg="rqt_gui" exec="rqt_gui" args="--perspective-file $(find-pkg-share central)/config/core.perspective" />
-  <node name="rviz" pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share central)/config/core.rviz" output="screen" />
 </launch>
