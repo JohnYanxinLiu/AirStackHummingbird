@@ -1,0 +1,11 @@
+name: ROS 2 Workspace Build
+description: Build packages in a ROS 2 workspace
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        source install/setup.bash
+        colcon build --event-handlers console_cohesion+ --cmake-args
+
+
