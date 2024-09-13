@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>robot_system_tests</name>
+  <name>end2end_tests</name>
   <version>0.0.0</version>
-  <description>Tests for the full robot system</description>
+  <description>Tests in simulation for full systems</description>
   <maintainer email="uav@todo.todo">uav</maintainer>
   <license>TODO: License declaration</license>
 
   <!-- <buildtool_depend>rclpy</buildtool_depend> -->
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
 
-
+  
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>

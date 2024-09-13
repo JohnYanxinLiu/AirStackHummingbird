@@ -3,7 +3,7 @@
 <package format="3">
   <name>robot_system_tests</name>
   <version>0.0.0</version>
-  <description>Tests for the full robot system</description>
+  <description>Robot system tests for one singular robot</description>
   <maintainer email="uav@todo.todo">uav</maintainer>
   <license>TODO: License declaration</license>
 

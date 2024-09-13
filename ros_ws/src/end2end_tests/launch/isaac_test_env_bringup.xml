@@ -1,24 +1,22 @@
 <launch>
-  
+  <!-- Test node  -->
+  <node name="end2end_test_node" pkg="end2end_tests" exec="end2end_tester_node.py" output="screen" />
+
   <!-- Simulator -->
   <set_env name="OMNI_KIT_ALLOW_ROOT" value="1" />
   <node name="isaacsim" pkg="isaacsim" exec="run_isaacsim.py" output="screen">
     <param name="install_path" value="/isaac-sim" />
-    <param name="env_path" value="/extras/two_drone_world.usd" />
+    <param name="env_path" value="/extras/spirit_uav_fire_academy.usd" />
     <param name="play_sim_on_start" value="true" />
+    <!-- <param name="headless" value="" />   -->
+    <param name="headless" value="native" />  
     <param name="isaac_args" value="--/app/scripting/ignoreWarningDialog=true" />
   </node>
   
-  <group>
+  <!-- <group>
     <set_env name="ROS_DOMAIN_ID" value="1" />
     <push_ros_namespace namespace="robot1" />
-    <include file="$(find-pkg-share central)/launch/ascent_drone.xml" />
-  </group>
-
-  <group>
-    <set_env name="ROS_DOMAIN_ID" value="2" />
-    <push_ros_namespace namespace="robot2" />
-    <include file="$(find-pkg-share central)/launch/ascent_drone.xml" />
-  </group>
+    <include file="$(find-pkg-share central)/launch/ascent_drone_headless.xml" />
+  </group> -->
   
 </launch>

@@ -10,6 +10,7 @@
 
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String
 import argparse
 import os
 import subprocess
@@ -17,6 +18,8 @@ import signal
 import sys
 import atexit
 import psutil
+import enum
+import time
 
 # Default values
 defaults = {
@@ -24,7 +27,7 @@ defaults = {
     "isaac_sim_path": "",
     "use_internal_libs": False,
     "dds_type": "fastdds",
-    "gui": "",
+    "env_path": "",
     "standalone": "",
     "play_sim_on_start": False,
     "ros_distro_var": "foxy",
@@ -32,6 +35,13 @@ defaults = {
     "headless": "",
     "isaac_args": "",
 }
+
+# Enum for simulation status
+class sim_status_types(enum.Enum):
+    initializing = "initializing"
+    not_ready = "not_ready"
+    ready = "ready"
+    error = "error"
 
 # List to keep track of subprocesses
 subprocesses = []
@@ -69,6 +79,12 @@ def update_env_vars(version_to_remove, specified_path_to_remove, env_var_name):
 class IsaacSimLauncherNode(Node):
     def __init__(self):
         super().__init__('isaac_sim_launcher_node')
+
+        self.sim_status = sim_status_types.initializing
+        self.pub_sim_status = self.create_publisher(String, '/sim_status', 10)
+        self.pub_sim_status.publish(String(data=self.sim_status.value))
+        self.timer = self.create_timer(1.0, self.timer_callback)
+
         self.declare_parameters(
             namespace='',
             parameters=[
@@ -76,7 +92,7 @@ class IsaacSimLauncherNode(Node):
                 ('install_path', defaults['isaac_sim_path']),
                 ('use_internal_libs', defaults['use_internal_libs']),
                 ('dds_type', defaults['dds_type']),
-                ('gui', defaults['gui']),
+                ('env_path', defaults['env_path']),
                 ('standalone', defaults['standalone']),
                 ('play_sim_on_start', defaults['play_sim_on_start']),
                 ('ros_distro', defaults['ros_distro_var']),
@@ -87,13 +103,17 @@ class IsaacSimLauncherNode(Node):
         )
         self.execute_launch()
 
+    def timer_callback(self):
+
+        self.pub_sim_status.publish(String(data=self.sim_status.value))
+
     def execute_launch(self):
         args = argparse.Namespace()
         args.version = self.get_parameter('version').get_parameter_value().string_value
         args.install_path = self.get_parameter('install_path').get_parameter_value().string_value
         args.use_internal_libs = self.get_parameter('use_internal_libs').get_parameter_value().bool_value
         args.dds_type = self.get_parameter('dds_type').get_parameter_value().string_value
-        args.gui = self.get_parameter('gui').get_parameter_value().string_value
+        args.env_path = self.get_parameter('env_path').get_parameter_value().string_value
         args.standalone = self.get_parameter('standalone').get_parameter_value().string_value
         args.play_sim_on_start = self.get_parameter('play_sim_on_start').get_parameter_value().bool_value
         args.ros_distro = self.get_parameter('ros_distro').get_parameter_value().string_value
@@ -157,24 +177,42 @@ class IsaacSimLauncherNode(Node):
             # Default command
             executable_command = f'{os.path.join(filepath_root, "isaac-sim.sh" if sys.platform != "win32" else "isaac-sim.bat")} --/isaac/startup/ros_bridge_extension=omni.isaac.ros2_bridge'
 
-            # TODO make an additional args parameter for this
-            print(executable_command)
-            executable_command += ' ' + args.isaac_args#' --/app/scripting/ignoreWarningDialog=true'
-            
             if args.headless == "native":
                 executable_command = f'{os.path.join(filepath_root, "isaac-sim.headless.native.sh" if sys.platform != "win32" else "isaac-sim.headless.native.bat")} --/isaac/startup/ros_bridge_extension=omni.isaac.ros2_bridge'
             elif args.headless == "webrtc":
                 executable_command = f'{os.path.join(filepath_root, "isaac-sim.headless.webrtc.sh" if sys.platform != "win32" else "isaac-sim.headless.webrtc.bat")} --/isaac/startup/ros_bridge_extension=omni.isaac.ros2_bridge'
+            
+            # TODO make an additional args parameter for this
+            print(executable_command)
+            executable_command += ' ' + args.isaac_args #' --/app/scripting/ignoreWarningDialog=true'
 
-            if args.gui != "":
+            if args.env_path != "":
                 script_dir = os.path.dirname(__file__)
-                file_arg = os.path.join(script_dir, "open_isaacsim_stage.py") + f" --path {args.gui} {play_sim_on_start_arg}"
+                file_arg = os.path.join(script_dir, "open_isaacsim_stage.py") + f" --path {args.env_path} {play_sim_on_start_arg}"
                 command = f"{executable_command} --exec '{file_arg}'"
-                proc = subprocess.Popen(command, shell=True, start_new_session=True)
+                # proc = subprocess.Popen(command, shell=True, start_new_session=True)
+                proc = subprocess.Popen(command, shell=True, start_new_session=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 subprocesses.append(proc.pid)
             else:
                 proc = subprocess.Popen(executable_command, shell=True, start_new_session=True)
                 subprocesses.append(proc.pid)
+        
+        # continue checking to see if the sim is ready
+
+        if args.headless == "native":
+            self.get_logger().info("Waiting for Isaac Sim to be ready...")
+            self.sim_status = sim_status_types.not_ready
+            while True:
+                try:
+                    output = proc.stdout.readline()
+                    if "Isaac Sim Headless Native App is loaded" in output.decode('utf-8'):
+                        self.sim_status = sim_status_types.ready
+                        self.get_logger().info("Isaac Sim is ready!")
+                        break
+                    # else:
+                    #     self.pub_sim_status.publish(String(data=sim_status_types.not_ready.value))
+                except:
+                    pass
 
 def main(args=None):
     rclpy.init(args=args)
