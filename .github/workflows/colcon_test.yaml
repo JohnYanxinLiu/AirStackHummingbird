@@ -1,9 +1,59 @@
-name: ROS 2 Workspace Test
-description: Test packages in a ROS 2 workspace
-runs:
-  using: composite
-  steps:
-    - shell: bash
-      run: |
-        source install/setup.bash
-        colcon test --event-handlers console_cohesion+ --pytest-with-coverage --return-code-on-test-failure
+# This YAML file is a GitHub Actions workflow configuration for running tests on a ROS 2
+name: ros2 colcon tests 
+on:
+  push:
+    branches:
+      - master 
+      - main
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ros-tooling/setup-ros@latest
+        with:
+          version: humble
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install ROS 2
+        run: |
+          sudo apt update
+          sudo apt install -y curl gnupg lsb-release
+          curl -sSL http://repo.ros2.org/repos.key | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
+          sudo apt update
+          sudo apt install -y ros-humble-desktop
+          source /opt/ros/humble/setup.bash
+
+      - name: Install ROS 2 Dependencies
+        run: |
+          sudo apt install -y python3-colcon-common-extensions
+          sudo apt install -y python3-pip
+          pip install -r requirements.txt
+
+      - name: Build with colcon
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --symlink-install
+
+      - name: Run tests with colcon
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon test
+          colcon test-result --verbose
+          
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: result
+
+
