@@ -1,7 +1,7 @@
 /**:
   ros__parameters:
     # Basic setup
-    map_frame: world
+    map_frame: map
     robot_frame: base_link
     max_range: 10.0
     resolution: 0.7

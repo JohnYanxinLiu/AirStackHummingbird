@@ -1,61 +1,52 @@
+---
 name: gcs_domain_bridge
 topics:
-  /robot_1/world_frame/odometry:
-    type: nav_msgs/msg/Odometry
-    from_domain: 1
-    to_domain: 0
-
-  /robot_1/world_frame/global_path:
-    type: nav_msgs/msg/Path
-    from_domain: 1
-    to_domain: 0
-
   /robot_1/vdb_mapping/vdb_map_visualization:
-    type: visualization_msgs/msg/MarkerArray
     from_domain: 1
     to_domain: 0
-  
-  /robot_2/world_frame/odometry:
-    type: nav_msgs/msg/Odometry
-    from_domain: 2
+    type: visualization_msgs/msg/MarkerArray
+  /robot_1/world_frame/global_path:
+    from_domain: 1
     to_domain: 0
-
-  /robot_2/world_frame/global_path:
     type: nav_msgs/msg/Path
-    from_domain: 2
+  /robot_1/world_frame/odometry:
+    bidirectional: true
+    from_domain: 1
     to_domain: 0
-
+    type: nav_msgs/msg/Odometry
   /robot_2/vdb_mapping/vdb_map_visualization:
-    type: visualization_msgs/msg/MarkerArray
     from_domain: 2
     to_domain: 0
-
-  /robot_3/world_frame/odometry:
-    type: nav_msgs/msg/Odometry
-    from_domain: 3
+    type: visualization_msgs/msg/MarkerArray
+  /robot_2/world_frame/global_path:
+    from_domain: 2
     to_domain: 0
-
-  /robot_3/world_frame/global_path:
     type: nav_msgs/msg/Path
-    from_domain: 3
+  /robot_2/world_frame/odometry:
+    from_domain: 2
     to_domain: 0
-
+    type: nav_msgs/msg/Odometry
   /robot_3/vdb_mapping/vdb_map_visualization:
-    type: visualization_msgs/msg/MarkerArray
     from_domain: 3
     to_domain: 0
-
-  /robot_4/world_frame/odometry:
-    type: nav_msgs/msg/Odometry
-    from_domain: 4
-    to_domain: 0
-
-  /robot_4/world_frame/global_path:
-    type: nav_msgs/msg/Path
-    from_domain: 4
-    to_domain: 0
-
-  /robot_4/vdb_mapping/vdb_map_visualization:
     type: visualization_msgs/msg/MarkerArray
+  /robot_3/world_frame/global_path:
+    from_domain: 3
+    to_domain: 0
+    type: nav_msgs/msg/Path
+  /robot_3/world_frame/odometry:
+    from_domain: 3
+    to_domain: 0
+    type: nav_msgs/msg/Odometry
+  /robot_4/vdb_mapping/vdb_map_visualization:
     from_domain: 4
     to_domain: 0
+    type: visualization_msgs/msg/MarkerArray
+  /robot_4/world_frame/global_path:
+    from_domain: 4
+    to_domain: 0
+    type: nav_msgs/msg/Path
+  /robot_4/world_frame/odometry:
+    from_domain: 4
+    to_domain: 0
+    type: nav_msgs/msg/Odometry

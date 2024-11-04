@@ -116,7 +116,7 @@ Currently the ground control station uses the same image as the robot container.
 Start a bash shell in a robot container:
 
 ```bash
-docker exec -it ground-control-station bash
+docker exec -it gcs bash
 ```
 
 The available aliases within the container are currently the same.
@@ -127,7 +127,7 @@ On the GCS `ROS_DOMAIN_ID` is set to 0.
 
 The containers mimic the robots' onboard computers on the same network. Therefore we intend to interface with the robots through ssh.
 
-The `ground-control-station` and `docker-robot-*` containers are setup with ssh daemon, so you can ssh into the containers using the IP address.
+The `gcs` and `docker-robot-*` containers are setup with ssh daemon, so you can ssh into the containers using the IP address.
 
 You can get the IP address of each container by running the following command:
 

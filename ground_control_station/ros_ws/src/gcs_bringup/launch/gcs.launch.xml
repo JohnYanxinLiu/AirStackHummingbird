@@ -1,0 +1,25 @@
+<!-- GROUND_CONTROL_STATION -->
+<launch>
+  <push_ros_namespace namespace="" />
+
+  <!-- TODO: parameterize this -->
+  <set_parameter name="use_sim_time" value="true" />
+
+  <!-- Static TFs -->
+  <include file="$(find-pkg-share gcs_bringup)/launch/static_transforms.launch.xml" />
+
+
+  <node pkg="domain_bridge" exec="domain_bridge"
+    name="domain_bridge"
+    output="screen"
+    args="$(find-pkg-share gcs_bringup)/config/domain_bridge.yaml" />
+
+
+  <!-- GUI -->
+
+  <node pkg="rviz2" exec="rviz2"
+    args="-d $(find-pkg-share gcs_bringup)/rviz/gcs.rviz --ros-args --log-level INFO"
+    output="screen" respawn="true" respawn_delay="1" />
+
+
+</launch>

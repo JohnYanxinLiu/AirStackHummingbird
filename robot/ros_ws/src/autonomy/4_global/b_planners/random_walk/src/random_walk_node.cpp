@@ -190,7 +190,7 @@ void RandomWalkNode::generate_plan() {
                                     this->generated_paths.back().poses.back().pose.position.z, yaw);
     }
 
-    float timeout_duration = 5.0;
+    float timeout_duration = 1.0;
     std::optional<Path> gen_path_opt =
         this->random_walk_planner.generate_straight_rand_path(start_loc, timeout_duration);
     if (gen_path_opt.has_value() && gen_path_opt.value().size() > 0) {

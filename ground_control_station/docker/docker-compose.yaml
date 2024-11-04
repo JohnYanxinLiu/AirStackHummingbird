@@ -1,12 +1,14 @@
 services:
-  ground-control-station:
-    image: TODO
-    container_name: ground-control-station
+  gcs:
+    image: &airstack-dev-image airlab-storage.andrew.cmu.edu:5001/shared/airstack-dev:v0.5.5
+    container_name: gcs
     entrypoint: ""
     command: >
       bash -c "ssh service restart;
       tmux new -d -s gcs_bringup
-      && tmux send-keys -t gcs_bringup 'ros2 launch gcs_bringup gcs.launch.xml' ENTER
+      && tmux send-keys -t gcs_bringup
+      'if [ ! -d "ros_ws/install" ]; then bws && sws; fi;
+      ros2 launch gcs_bringup gcs.launch.xml' ENTER
       && sleep infinity"
     # Interactive shell
     stdin_open: true # docker run -i
@@ -35,9 +37,18 @@ services:
       - $HOME/.Xauthority:/root/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix
       # developer stuff
+      - .dev:/root/.dev:rw # developer config
       - .bashrc:/root/.bashrc:rw # bash config
-      - .bash_history:/root/.bash_history:rw # save cmdline history
-      - /var/run/docker.sock:/var/run/docker.sock # access docker API for container name
       # autonomy stack stuff
-      - ../../common/ros_ws:/root/common/ros_ws:rw  # common ROS packages
-      - ../ros_ws:/root/ros_ws:rw  # gcs-specific ROS packages
+      - ../../common/ros_packages:/root/ros_ws/src/common:rw # common ROS packages
+      - ../../common/ros_packages/fastdds.xml:/root/ros_ws/fastdds.xml:rw # fastdds.xml
+      - ../ros_ws:/root/ros_ws:rw # gcs-specific ROS packages
+
+# ==============================================================================
+networks:
+  airstack_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.0.0/24
