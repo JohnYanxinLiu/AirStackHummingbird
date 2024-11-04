@@ -1,10 +1,9 @@
-
-#ifndef RANDOM_WALK_NODE_H
-#define RANDOM_WALK_NODE_H
+#pragma once
 
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Quaternion.h>
 
+#include <nav_msgs/msg/odometry.hpp>
 #include <array>
 #include <cmath>
 #include <geometry_msgs/msg/point.hpp>
@@ -34,7 +33,7 @@ class RandomWalkNode : public rclcpp::Node {
     std::string pub_goal_point_viz_topic_;
     std::string pub_trajectory_viz_topic_;
     std::string sub_map_topic_;
-    std::string sub_robot_tf_topic_;
+    std::string sub_robot_odom_topic_;
     std::string srv_random_walk_toggle_topic_;
 
     // Variables
@@ -44,17 +43,17 @@ class RandomWalkNode : public rclcpp::Node {
     std::vector<nav_msgs::msg::Path> generated_paths;
     bool publish_visualizations = false;
     bool received_first_map = false;
-    bool received_first_robot_tf = false;
+    bool received_first_robot_odom = false;
     bool enable_random_walk = false;
     bool is_path_executing = false;
 
-    geometry_msgs::msg::Transform current_location;       // x, y, z, yaw
+    geometry_msgs::msg::Pose current_location;       // x, y, z, yaw
     geometry_msgs::msg::Transform current_goal_location;  // x, y, z, yaw
 
     // Callbacks
     void mapCallback(const visualization_msgs::msg::Marker::SharedPtr msg);
 
-    void tfCallback(const tf2_msgs::msg::TFMessage::SharedPtr msg);
+    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
     void randomWalkToggleCallback(const std_srvs::srv::Trigger::Request::SharedPtr request,
                                   std_srvs::srv::Trigger::Response::SharedPtr response);
@@ -78,7 +77,7 @@ class RandomWalkNode : public rclcpp::Node {
 
     // ROS subscribers
     rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr sub_map;
-    rclcpp::Subscription<tf2_msgs::msg::TFMessage>::SharedPtr sub_robot_tf;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_robot_odom;
 
     // ROS publishers
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_global_plan;
@@ -91,5 +90,3 @@ class RandomWalkNode : public rclcpp::Node {
     // ROS timers
     rclcpp::TimerBase::SharedPtr timer;
 };
-
-#endif  // RANDOM_WALK_NODE_H
