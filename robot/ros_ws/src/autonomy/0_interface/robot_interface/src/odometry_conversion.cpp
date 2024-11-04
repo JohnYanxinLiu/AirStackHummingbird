@@ -71,9 +71,9 @@ class OdometryConversion : public rclcpp::Node {
         qos.depth = 1;
         if (odom_input_qos_is_best_effort) qos.reliability = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
         odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
-            "odometry_in", rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(qos), qos),
+            "~/odometry_in", rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(qos), qos),
             std::bind(&OdometryConversion::odom_callback, this, std::placeholders::_1));
-        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odometry_out", 1);
+        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("~/odometry_out", 1);
         tf_buffer = new tf2_ros::Buffer(this->get_clock());
         tf_listener = new tf2_ros::TransformListener(*tf_buffer);
         tf_broadcaster = new tf2_ros::TransformBroadcaster(*this);
