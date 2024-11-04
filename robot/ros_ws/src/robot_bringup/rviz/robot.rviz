@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /TF1/Frames1
         - /Sensors1
+        - /Sensors1/Lidar1
         - /Local1
         - /Local1/DROAN1
         - /Local1/Trajectory Controller1
@@ -29,7 +30,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Expansion Cloud
+    SyncSource: Lidar
 Visualization Manager:
   Class: ""
   Displays:
@@ -56,14 +57,12 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        American_Beech:
-          Value: true
-        Plane:
-          Value: true
         base_link:
           Value: true
         base_link_frd:
           Value: false
+        base_link_ground_truth:
+          Value: true
         base_link_stabilized:
           Value: false
         front_stereo:
@@ -101,12 +100,8 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          American_Beech:
-            {}
-          Plane:
-            {}
           map_FLU:
-            map:
+            base_link_ground_truth:
               base_link:
                 base_link_frd:
                   {}
@@ -117,8 +112,9 @@ Visualization Manager:
                     {}
                 ouster:
                   {}
-              base_link_stabilized:
-                {}
+            base_link_stabilized:
+              {}
+            map:
               look_ahead_point:
                 {}
               look_ahead_point_stabilized:
@@ -172,7 +168,7 @@ Visualization Manager:
           Class: rviz_default_plugins/PointCloud2
           Color: 170; 170; 255
           Color Transformer: FlatColor
-          Decay Time: 0
+          Decay Time: 10
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
@@ -281,7 +277,7 @@ Visualization Manager:
               Enabled: true
               Name: Trimmed Global Plan for DROAN
               Namespaces:
-                global_plan: true
+                {}
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
@@ -470,25 +466,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 14.309243202209473
+      Distance: 49.91039276123047
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.3486995697021484
-        Y: -0.9512473344802856
-        Z: 1.4642823934555054
+        X: -4.748284339904785
+        Y: 6.343466758728027
+        Z: 1.4974645376205444
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.47539615631103516
+      Pitch: 0.45539572834968567
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.9035723209381104
+      Yaw: 0.6085709929466248
     Saved: ~
 Window Geometry:
   Displays:

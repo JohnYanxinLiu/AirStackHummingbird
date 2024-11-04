@@ -14,6 +14,18 @@
   <!-- Logging -->
   <include file="$(find-pkg-share logging_bringup)/launch/logging.launch.xml" />
 
+  <!-- ROS Domain Bridge -->
+
+  <node pkg="transform_to_world_frame" exec="transform_to_world_frame"
+    output="screen" />
+
+  <include file="$(find-pkg-share domain_bridge)/launch/domain_bridge.launch.xml">
+    <arg name="config" value="$(find-pkg-share robot_bringup)/config/domain_bridge.yaml" />
+    <arg name="from_domain" value="$(env ROS_DOMAIN_ID)" />
+    <arg name="to_domain" value="0" />
+
+  </include>
+
   <!-- GUI -->
 
   <node pkg="rviz2" exec="rviz2"

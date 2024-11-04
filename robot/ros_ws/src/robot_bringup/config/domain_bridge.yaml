@@ -1,0 +1,18 @@
+name: robot_domain_bridge
+from_domain: 1
+to_domain: 2
+topics:
+  /robot_1/world_frame/odometry:
+    type: nav_msgs/msg/Odometry
+    from_domain: 1
+    to_domain: 2
+
+  /robot_1/world_frame/global_path:
+    type: nav_msgs/msg/Path
+    from_domain: 1
+    to_domain: 2
+
+  /robot_1/vdb_mapping/vdb_map_visualization:
+    type: visualization_msgs/msg/MarkerArray
+    from_domain: 1
+    to_domain: 2

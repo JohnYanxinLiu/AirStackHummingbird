@@ -101,7 +101,7 @@ bool RandomWalkPlanner::check_if_collided(std::tuple<float, float, float> point)
 
 std::tuple<float, float, float> RandomWalkPlanner::generate_goal_point(
     std::tuple<float, float, float, float> start_point) {
-    float time_out_duration = 1.0;
+    float time_out_duration = 10.0;
     const clock_t start_time = clock();
 
     while ((clock() - start_time) / CLOCKS_PER_SEC < time_out_duration) {
