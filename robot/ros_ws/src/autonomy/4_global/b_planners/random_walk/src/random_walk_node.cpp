@@ -99,11 +99,13 @@ RandomWalkNode::RandomWalkNode() : Node("random_walk_node") {
 
     this->sub_map = this->create_subscription<visualization_msgs::msg::Marker>(
         sub_map_topic_, 10, std::bind(&RandomWalkNode::mapCallback, this, std::placeholders::_1));
-    this->sub_robot_odom = this->create_subscription<nav_msgs::msg::Odometry>(
+    this->sub_robot_odom = this->create_subscription<airstack_msgs::msg::Odometry>(
         sub_robot_odom_topic_, 10,
         std::bind(&RandomWalkNode::odomCallback, this, std::placeholders::_1));
 
     this->pub_global_plan = this->create_publisher<nav_msgs::msg::Path>(pub_global_plan_topic_, 10);
+    this->pub_trajectory_override =
+        this->create_publisher<airstack_msgs::msg::TrajectoryXYZVYaw>("~/trajectory_override", 10);
     this->pub_goal_point =
         this->create_publisher<visualization_msgs::msg::Marker>(pub_goal_point_viz_topic_, 10);
     this->pub_trajectory_lines =
@@ -152,15 +154,14 @@ void RandomWalkNode::mapCallback(const visualization_msgs::msg::Marker::SharedPt
     }
 }
 
-void RandomWalkNode::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+void RandomWalkNode::odomCallback(const airstack_msgs::msg::Odometry::SharedPtr msg) {
     // get the current location
-    this->current_location = msg->pose.pose;
+    this->current_location = msg->pose;
     if (!this->received_first_robot_odom) {
         this->received_first_robot_odom = true;
         RCLCPP_INFO(this->get_logger(), "Received first robot_odom");
     }
 }
-
 
 void RandomWalkNode::generate_plan() {
     RCLCPP_INFO(this->get_logger(), "Starting to generate plan...");
@@ -173,9 +174,9 @@ void RandomWalkNode::generate_plan() {
         double roll, pitch, yaw;
         tf2::Matrix3x3 m(q);
         m.getRPY(roll, pitch, yaw);
-        start_loc = std::make_tuple(this->current_location.position.x,
-                                    this->current_location.position.y,
-                                    this->current_location.position.z, yaw);
+        start_loc =
+            std::make_tuple(this->current_location.position.x, this->current_location.position.y,
+                            this->current_location.position.z, yaw);
     } else {
         geometry_msgs::msg::Quaternion orientation =
             this->generated_paths.back().poses.back().pose.orientation;
@@ -254,16 +255,36 @@ void RandomWalkNode::generate_plan() {
 
 void RandomWalkNode::publish_plan() {
     nav_msgs::msg::Path full_path;
+
+    airstack_msgs::msg::TrajectoryXYZVYaw traj;
+
     for (auto path : this->generated_paths) {
         for (auto point : path.poses) {
             full_path.poses.push_back(point);
+
+            airstack_msgs::msg::WaypointXYZVYaw waypoint;
+            waypoint.position = point.pose.position;
+            waypoint.velocity = 4.0;
+            double roll, pitch, yaw;
+            const auto &orientation = point.pose.orientation;
+            tf2::Quaternion q(orientation.x, orientation.y, orientation.z, orientation.w);
+            tf2::Matrix3x3 m(q);
+            m.getRPY(roll, pitch, yaw);
+            waypoint.yaw = yaw;
+            traj.waypoints.push_back(waypoint);
         }
     }
     full_path.header.stamp = this->now();
     full_path.header.frame_id = this->world_frame_id_;
     this->pub_global_plan->publish(full_path);
+
+    traj.header.stamp = full_path.header.stamp;
+    traj.header.frame_id = this->world_frame_id_;
+    this->pub_trajectory_override->publish(traj);
+
     RCLCPP_INFO(this->get_logger(), "Published full path");
 }
+
 void RandomWalkNode::timerCallback() {
     if (this->enable_random_walk && !this->is_path_executing) {
         if (this->received_first_map && this->received_first_robot_odom) {
@@ -273,12 +294,12 @@ void RandomWalkNode::timerCallback() {
             this->publish_plan();
             this->is_path_executing = true;
         } else {
-            RCLCPP_INFO(this->get_logger(), "Waiting for map and robot tf to be received...");
+            RCLCPP_INFO(this->get_logger(), "Waiting for map and robot odom to be received...");
         }
     } else if (this->enable_random_walk && this->is_path_executing) {
-        std::tuple<float, float, float> current_point = std::make_tuple(
-            this->current_location.position.x, this->current_location.position.y,
-            this->current_location.position.z);
+        std::tuple<float, float, float> current_point =
+            std::make_tuple(this->current_location.position.x, this->current_location.position.y,
+                            this->current_location.position.z);
         std::tuple<float, float, float> goal_point = std::make_tuple(
             this->current_goal_location.translation.x, this->current_goal_location.translation.y,
             this->current_goal_location.translation.z);
@@ -289,13 +310,6 @@ void RandomWalkNode::timerCallback() {
             RCLCPP_INFO(this->get_logger(), "Reached goal point");
         }
     }
-    // if (this->publish_visualizations && this->generated_path.poses.size() > 0) {
-    //     visualization_msgs::msg::Marker goal_point_msg = createGoalPointMarker();
-    //     this->pub_goal_point->publish(goal_point_msg);
-    //     visualization_msgs::msg::Marker trajectory_line_msg = createTrajectoryLineMarker();
-    //     this->pub_trajectory_lines->publish(trajectory_line_msg);
-    //     RCLCPP_INFO(this->get_logger(), "Published goal point and trajectory line");
-    // }
 }
 
 visualization_msgs::msg::Marker RandomWalkNode::createTrajectoryLineMarker() {

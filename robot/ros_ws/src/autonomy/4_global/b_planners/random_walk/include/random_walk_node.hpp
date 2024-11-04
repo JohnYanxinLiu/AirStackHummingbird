@@ -3,11 +3,14 @@
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Quaternion.h>
 
-#include <nav_msgs/msg/odometry.hpp>
+#include <airstack_msgs/msg/trajectory_xyzv_yaw.hpp>
+#include <airstack_msgs/msg/waypoint_xyzv_yaw.hpp>
+#include <airstack_msgs/msg/odometry.hpp>
 #include <array>
 #include <cmath>
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/transform.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include <nav_msgs/srv/get_plan.hpp>
 #include <optional>
@@ -47,13 +50,13 @@ class RandomWalkNode : public rclcpp::Node {
     bool enable_random_walk = false;
     bool is_path_executing = false;
 
-    geometry_msgs::msg::Pose current_location;       // x, y, z, yaw
+    geometry_msgs::msg::Pose current_location;            // x, y, z, yaw
     geometry_msgs::msg::Transform current_goal_location;  // x, y, z, yaw
 
     // Callbacks
     void mapCallback(const visualization_msgs::msg::Marker::SharedPtr msg);
 
-    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
+    void odomCallback(const airstack_msgs::msg::Odometry::SharedPtr msg);
 
     void randomWalkToggleCallback(const std_srvs::srv::Trigger::Request::SharedPtr request,
                                   std_srvs::srv::Trigger::Response::SharedPtr response);
@@ -77,10 +80,11 @@ class RandomWalkNode : public rclcpp::Node {
 
     // ROS subscribers
     rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr sub_map;
-    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_robot_odom;
+    rclcpp::Subscription<airstack_msgs::msg::Odometry>::SharedPtr sub_robot_odom;
 
     // ROS publishers
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_global_plan;
+    rclcpp::Publisher<airstack_msgs::msg::TrajectoryXYZVYaw>::SharedPtr pub_trajectory_override;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr pub_goal_point;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr pub_trajectory_lines;
 

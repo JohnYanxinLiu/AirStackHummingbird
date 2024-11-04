@@ -14,6 +14,7 @@ find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(airstack_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -37,6 +38,7 @@ add_executable(random_walk_planner src/random_walk_node.cpp src/random_walk_logi
 ament_target_dependencies(random_walk_planner
   rclcpp
   rclcpp_action
+  airstack_msgs
   std_msgs
   std_srvs
   geometry_msgs
