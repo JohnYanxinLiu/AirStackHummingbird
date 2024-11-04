@@ -11,7 +11,8 @@
         output="screen" />
 
     <!-- converts odometry topic into a TF -->
-    <node pkg="robot_interface" exec="odometry_conversion"
+    <!-- odometry_output_type: 0=NONE, 1=TRANSFORM, 2=OVERWRITE -->
+    <!-- <node pkg="robot_interface" exec="odometry_conversion"
         namespace="odometry_conversion"
         output="screen">
         <remap from="odometry_in" to="/$(env ROBOT_NAME)/interface/mavros/local_position/odom" />
@@ -20,9 +21,32 @@
         <param name="odom_input_qos_is_best_effort" value="true" />
         <param name="new_frame_id" value="map" />
         <param name="new_child_frame_id" value="base_link" />
-        <param name="odometry_output_type" value="2" /> <!-- 0: NONE, 1: TRANSFORM, 2: OVERWRITE -->
+        <param name="odometry_output_type" value="2" /> 
         <param name="convert_odometry_to_transform" value="true" />
         <param name="convert_odometry_to_stabilized_transform" value="true" />
+    </node> -->
+
+    <!-- the below is a hack to get ground truth TF from Isaac. this is to remove map noise for the sponsor demo -->
+     <!-- basically we publish the ground truth base link tf from isaac. we then substitute that to the base_link tf -->
+    <node pkg="robot_interface" exec="odometry_conversion" output="screen">
+        <remap from="~/odometry_in" to="/$(env ROBOT_NAME)/interface/mavros/local_position/odom" />
+        <remap from="~/odometry_out" to="odometry" />
+
+        <param name="odom_input_qos_is_best_effort" value="true" />
+        <param name="new_frame_id" value="map" />
+        <param name="new_child_frame_id" value="base_link" />
+        <param name="odometry_output_type" value="2" /> 
+        <param name="convert_odometry_to_transform" value="false" /> <!-- no longer publish TF from estimated odom, this is the hack -->
+        <param name="convert_odometry_to_stabilized_transform" value="false" />
+    </node>
+    <node
+        pkg="tf2_ros"
+        exec="static_transform_publisher"
+        name="static_transform_publisher"
+        args="0 0 0 0 0 0 base_link_ground_truth base_link" />
+    <node pkg="robot_interface" exec="stabilized_tf_node" output="screen">
+        <param name="parent_frame" value="map_FLU" />
+        <param name="child_frame" value="base_link" />
     </node>
 
 </launch>
