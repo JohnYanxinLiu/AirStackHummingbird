@@ -74,7 +74,7 @@ std::optional<Path> RandomWalkPlanner::generate_straight_rand_path(
     } else {
         return path;
     }
-}
+ ETA estimation}
 
 bool RandomWalkPlanner::check_if_collided_single_voxel(
     std::tuple<float, float, float> point, std::tuple<float, float, float> voxel_center) {

@@ -51,9 +51,9 @@ std::optional<init_params> RandomWalkNode::readParameters() {
         RCLCPP_ERROR(this->get_logger(), "Cannot read parameter: publish_visualizations");
         return std::optional<init_params>{};
     }
-    this->declare_parameter<int>("num_paths_to_generate");
-    if (!this->get_parameter("num_paths_to_generate", this->num_paths_to_generate_)) {
-        RCLCPP_ERROR(this->get_logger(), "Cannot read parameter: num_paths_to_generate");
+    this->declare_parameter<int>("num_waypoints_to_generate");
+    if (!this->get_parameter("num_waypoints_to_generate", this->num_waypoints_to_generate_)) {
+        RCLCPP_ERROR(this->get_logger(), "Cannot read parameter: num_waypoints_to_generate");
         return std::optional<init_params>{};
     }
     this->declare_parameter<float>("max_start_to_goal_dist_m");
@@ -288,7 +288,7 @@ void RandomWalkNode::publish_plan() {
 void RandomWalkNode::timerCallback() {
     if (this->enable_random_walk && !this->is_path_executing) {
         if (this->received_first_map && this->received_first_robot_odom) {
-            for (int i = 0; i < this->num_paths_to_generate_; i++) {
+            for (int i = 0; i < this->num_waypoints_to_generate_; i++) {
                 this->generate_plan();
             }
             this->publish_plan();

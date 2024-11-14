@@ -3,9 +3,9 @@
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Quaternion.h>
 
+#include <airstack_msgs/msg/odometry.hpp>
 #include <airstack_msgs/msg/trajectory_xyzv_yaw.hpp>
 #include <airstack_msgs/msg/waypoint_xyzv_yaw.hpp>
-#include <airstack_msgs/msg/odometry.hpp>
 #include <array>
 #include <cmath>
 #include <geometry_msgs/msg/point.hpp>
@@ -42,7 +42,7 @@ class RandomWalkNode : public rclcpp::Node {
     // Variables
     init_params params;
     // nav_msgs::msg::Path generated_path;
-    int num_paths_to_generate_;
+    int num_waypoints_to_generate_;
     std::vector<nav_msgs::msg::Path> generated_paths;
     bool publish_visualizations = false;
     bool received_first_map = false;
