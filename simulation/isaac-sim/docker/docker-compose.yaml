@@ -62,3 +62,9 @@ services:
       - ../sitl_integration:/sitl_integration:rw
       - ../sitl_integration/inputrc:/etc/inputrc
       - ../sitl_integration/config:/root/.nvidia-omniverse/config:rw
+
+  isaac-sim-hitl:
+    extends:
+      file: ./docker-compose.yaml
+      service: isaac-sim
+    network_mode: host
