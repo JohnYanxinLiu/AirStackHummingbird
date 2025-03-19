@@ -1,6 +1,9 @@
+# ========= ARGS AND INIT ===============
 # either ubuntu:22.04 or l4t. ubuntu:22.04 is default
 ARG BASE_IMAGE
-FROM ${BASE_IMAGE:-ubuntu:22.04}
+FROM ${BASE_IMAGE:-nvidia/cuda:12.6.3-runtime-ubuntu22.04}
+
+ARG REAL_ROBOT=false
 
 # ========= SETUP ===============
 
@@ -30,18 +33,15 @@ RUN apt update && apt install -y \
     cmake build-essential \
     less htop jq \
     python3-pip \
-    python3-rosdep \
     tmux \
     gdb \
-    emacs \
-    curl \
     gnupg2 \
     lsb-release \
     sudo \
     software-properties-common \
-    wget \
     iputils-ping \
     net-tools \
+    zstd \
     && rm -rf /var/lib/apt/lists/*
 
 # OpenVDB used by RayFronts and VDB Mapping visualization
@@ -72,7 +72,7 @@ ENV PYTHONPATH=/opt/ros/humble/local/lib/python3.10/dist-packages:/opt/ros/humbl
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_VERSION=2
 ENV ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
-ENV DEBIAN_FRONTEND=
+# ENV DEBIAN_FRONTEND=
 
 # Install any additional ROS2 packages
 RUN apt update -y && apt install -y \
@@ -86,6 +86,7 @@ RUN apt update -y && apt install -y \
     ros-humble-domain-bridge \
     libcgal-dev \
     python3-colcon-common-extensions \
+    python3-rosdep \
     && rm -rf /var/lib/apt/lists/*
 
 RUN /opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
@@ -106,6 +107,7 @@ RUN pip3 install \
     pyyaml \
     requests \
     setuptools \
+    colcon-common-extensions \
     six \
     toml \
     scipy \
@@ -126,6 +128,18 @@ RUN pip3 install \
     wandb \
     && rm -rf /var/lib/apt/lists/*
 
+# ========= ZEDX =========
+WORKDIR /tmp/
+
+RUN if [ "$REAL_ROBOT" = "true" ]; then \
+    wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Ubuntu22_cuda12.1_v4.2.5.zstd.run ;\
+  else \
+    wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Tegra_L4T36.4_v4.2.5.zstd.run ;\
+  fi
+
+RUN chmod +x zed_sdk.zstd.run && \
+    DEBIAN_FRONTEND="noninteractive" ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda
+
 # ========= MACVO =========
 
 # Downloading model weights for MACVO
@@ -134,20 +148,23 @@ RUN wget -r "https://github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_Fron
     mv /root/model_weights/github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_FrontendCov.pth /root/model_weights/MACVO_FrontendCov.pth && \
     rm -rf /root/model_weights/github.com
 
+# Fixes for MACVO Integration
+RUN pip install huggingface_hub
+RUN pip uninstall matplotlib -y
 
 # ========= DESKTOP VS REAL ROBOT =========
+WORKDIR /tmp/
 
-ARG REAL_ROBOT=false
 RUN if [ "$REAL_ROBOT"  = "true" ]; then \
-  # Put commands here that should run for the real robot but not the sim
-  echo "REAL_ROBOT is true"; \
-  apt-get update && apt-get install -y \
-    libimath-dev \
-    && rm -rf /var/lib/apt/lists/* \
-else \
-  # Put commands here that should be run for the sim but not the real robot
-  echo "REAL_ROBOT is false"; \
-fi
+    # Put commands here that should run for the real robot but not the sim
+    echo "REAL_ROBOT is true"; \
+    apt-get update && apt-get install -y \
+      libimath-dev \
+      && rm -rf /var/lib/apt/lists/*; \
+  else \
+    # Put commands here that should be run for the sim but not the real robot
+    echo "REAL_ROBOT is false" ; \
+  fi
 
 # ========= NETWORKING =========
 # Add ability to SSH
@@ -172,9 +189,4 @@ RUN apt purge git -y \
     && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Install colcon, seems to be getting removed
-RUN pip install -U colcon-common-extensions
-
-# Fixes for MACVO Integration
-RUN pip install huggingface_hub
-RUN pip uninstall matplotlib -y
+ENV DEBIAN_FRONTEND=
