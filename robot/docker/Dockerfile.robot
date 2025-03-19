@@ -26,7 +26,7 @@ RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata \
   && rm -rf /var/lib/apt/lists/*
 
-# ========================
+# ========== COMMON DEPENDENCIES ==============
 # Install dev tools and common dependencies
 RUN apt update && apt install -y \
     vim nano emacs wget curl tree \
@@ -138,7 +138,7 @@ RUN if [ "$REAL_ROBOT" = "true" ]; then \
   fi
 
 RUN chmod +x zed_sdk.zstd.run && \
-    DEBIAN_FRONTEND="noninteractive" ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda
+    DEBIAN_FRONTEND="noninteractive" ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda && rm zed_sdk.zstd.run
 
 # ========= MACVO =========
 
