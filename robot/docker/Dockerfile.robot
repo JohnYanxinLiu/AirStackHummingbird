@@ -2,6 +2,8 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE:-ubuntu:22.04}
 
+# ========= SETUP ===============
+
 # from https://github.com/athackst/dockerfiles/blob/main/ros2/humble.Dockerfile
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -21,11 +23,16 @@ RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata \
   && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install common programs
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# ========================
+# Install dev tools and common dependencies
+RUN apt update && apt install -y \
+    vim nano emacs wget curl tree \
+    cmake build-essential \
+    less htop jq \
+    python3-pip \
+    python3-rosdep \
+    tmux \
+    gdb \
     emacs \
     curl \
     gnupg2 \
@@ -37,6 +44,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
 
+# OpenVDB used by RayFronts and VDB Mapping visualization
+# Override install newer openvdb 9.1.0 for compatibility with Ubuntu 22.04  https://bugs.launchpad.net/bugs/1970108
+RUN apt remove -y libopenvdb*; \
+    git clone --recurse --branch v9.1.0 https://github.com/wyca-robotics/openvdb.git /opt/openvdb && \
+    mkdir /opt/openvdb/build && cd /opt/openvdb/build && \
+    cmake .. && \
+    make -j8 && make install && \
+    cd ..; rm -rf /opt/openvdb/build
+
+# ========== INSTALL ROS2 ==============
 # Install ROS2
 RUN sudo add-apt-repository universe \
   && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
@@ -56,19 +73,6 @@ ENV ROS_PYTHON_VERSION=3
 ENV ROS_VERSION=2
 ENV ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
 ENV DEBIAN_FRONTEND=
-# ========================
-
-WORKDIR /root/ros_ws
-
-# Install dev tools
-RUN apt update && apt install -y \
-    vim nano emacs wget curl tree \
-    cmake build-essential \
-    less htop jq \
-    python3-pip \
-    python3-rosdep \
-    tmux \
-    gdb
 
 # Install any additional ROS2 packages
 RUN apt update -y && apt install -y \
@@ -81,10 +85,12 @@ RUN apt update -y && apt install -y \
     ros-humble-grid-map \
     ros-humble-domain-bridge \
     libcgal-dev \
-    python3-colcon-common-extensions
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN /opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
 
+# ========== INSTALL PYTHON DEPENDENCIES ==========
 # Install Python dependencies
 RUN pip3 install \
     empy \
@@ -117,16 +123,33 @@ RUN pip3 install \
     timm==0.9.12 \
     rerun-sdk==0.17 \
     yacs \
-    wandb
+    wandb \
+    && rm -rf /var/lib/apt/lists/*
 
-# Override install newer openvdb 9.1.0 for compatibility with Ubuntu 22.04  https://bugs.launchpad.net/bugs/1970108
-RUN apt remove -y libopenvdb*; \
-    git clone --recurse --branch v9.1.0 https://github.com/wyca-robotics/openvdb.git /opt/openvdb && \
-    mkdir /opt/openvdb/build && cd /opt/openvdb/build && \
-    cmake .. && \
-    make -j8 && make install && \
-    cd ..; rm -rf /opt/openvdb/build
+# ========= MACVO =========
 
+# Downloading model weights for MACVO
+WORKDIR /root/model_weights
+RUN wget -r "https://github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_FrontendCov.pth" && \ 
+    mv /root/model_weights/github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_FrontendCov.pth /root/model_weights/MACVO_FrontendCov.pth && \
+    rm -rf /root/model_weights/github.com
+
+
+# ========= DESKTOP VS REAL ROBOT =========
+
+ARG REAL_ROBOT=false
+RUN if [ "$REAL_ROBOT"  = "true" ]; then \
+  # Put commands here that should run for the real robot but not the sim
+  echo "REAL_ROBOT is true"; \
+  apt-get update && apt-get install -y \
+    libimath-dev \
+    && rm -rf /var/lib/apt/lists/* \
+else \
+  # Put commands here that should be run for the sim but not the real robot
+  echo "REAL_ROBOT is false"; \
+fi
+
+# ========= NETWORKING =========
 # Add ability to SSH
 RUN apt-get update && apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
@@ -139,23 +162,10 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 EXPOSE 22
 
-ARG REAL_ROBOT=false
-RUN if [ "$REAL_ROBOT"  = "true" ]; then \
-  # Put commands here that should run for the real robot but not the sim
-  echo "REAL_ROBOT is true"; \
-  apt-get update && apt-get install -y libimath-dev; \
-else \
-  # Put commands here that should be run for the sim but not the real robot
-  echo "REAL_ROBOT is false"; \
-fi
-
-# Downloading model weights for MACVO
-WORKDIR /root/model_weights
-RUN wget -r "https://github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_FrontendCov.pth" && \ 
-    mv /root/model_weights/github.com/MAC-VO/MAC-VO/releases/download/model/MACVO_FrontendCov.pth /root/model_weights/MACVO_FrontendCov.pth && \
-    rm -rf /root/model_weights/github.com
-
+# ========= CLEANUP =========
+# Set the working directory
 WORKDIR /root/ros_ws
+
 # Cleanup. Prevent people accidentally doing git commits as root in Docker
 RUN apt purge git -y \
     && apt autoremove -y \
