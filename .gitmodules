@@ -10,3 +10,6 @@
 [submodule "robot/ros_ws/src/autonomy/2_perception/macvo/macvo/src"]
 	path = robot/ros_ws/src/autonomy/2_perception/macvo/macvo/src
 	url = https://github.com/MAC-VO/MAC-VO.git
+[submodule "robot/ros_ws/src/autonomy/1_sensors/zed-ros2-wrapper"]
+	path = robot/ros_ws/src/autonomy/1_sensors/zed-ros2-wrapper
+	url = git@github.com:stereolabs/zed-ros2-wrapper.git
