@@ -2,7 +2,6 @@ ARG ISAAC_VERSION="4.2.0"
 # expects context to be the root of the repository, i.e. AirStack/. this is so we can access AirStack/ros_ws/
 FROM nvcr.io/nvidia/isaac-sim:${ISAAC_VERSION}
 ARG ISAAC_VERSION
-WORKDIR /isaac-sim
 
 # ========== SETUP ==============
 
@@ -59,11 +58,14 @@ RUN apt update && apt install -y --no-install-recommends curl emacs vim nano tmu
     ros-humble-tf2* \
     ros-humble-mavros \
     ros-humble-ackermann-msgs \
+    ros-humble-vision-msgs \
     ros-humble-topic-tools \
     ros-humble-grid-map \
     ros-humble-domain-bridge \
     libcgal-dev \
-    python3-colcon-common-extensions
+    zstd \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN /opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
 
@@ -86,7 +88,7 @@ RUN cd /tmp/ && \
 
 # ========== INSTALL DRONE DEPENDENCIES ==============
 # Install mavlink-router
-RUN apt update && apt install meson ninja-build
+RUN apt update && apt install -y meson ninja-build && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/mavlink-router/mavlink-router.git --recurse /mavlink-router
 WORKDIR /mavlink-router
 RUN meson setup build .
@@ -116,3 +118,4 @@ RUN apt purge -y git &&  apt autoremove -y \
     && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /isaac-sim

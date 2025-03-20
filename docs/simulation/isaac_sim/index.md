@@ -4,6 +4,7 @@ The primary simulator we support is [NVIDIA Isaac Sim](https://docs.omniverse.nv
 We chose Isaac Sim as the best balance between photorealism and physics simulation.
 
 
+
 ## USD File Naming Conventions
 AirStack uses the following file naming conventions:
 
