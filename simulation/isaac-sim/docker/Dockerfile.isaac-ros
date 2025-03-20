@@ -18,6 +18,8 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     apt-get install -q -y --no-install-recommends tzdata && \
     rm -rf /var/lib/apt/lists/*
 
+# ========== COMMON DEPENDENCIES ==============
+# Install dev tools and common dependencies
 # install packages
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
@@ -26,6 +28,8 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends \
     tmux \
     iputils-ping \
     net-tools \
+    libcgal-dev \
+    zstd \
     && rm -rf /var/lib/apt/lists/*
 
 # setup keys
@@ -62,8 +66,6 @@ RUN apt update && apt install -y --no-install-recommends curl emacs vim nano tmu
     ros-humble-topic-tools \
     ros-humble-grid-map \
     ros-humble-domain-bridge \
-    libcgal-dev \
-    zstd \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 

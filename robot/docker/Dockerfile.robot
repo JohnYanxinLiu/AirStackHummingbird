@@ -34,9 +34,16 @@ RUN apt update && apt install -y \
   less htop jq \
   python3-pip \
   tmux \
+  git \
   gdb \
   gnupg2 \
   lsb-release \
+  libtbb-dev \
+  libboost-dev \
+  libboost-iostreams-dev \
+  libblosc-dev \
+  libjemalloc-dev \
+  libcgal-dev \
   sudo \
   software-properties-common \
   iputils-ping \
@@ -46,12 +53,12 @@ RUN apt update && apt install -y \
 
 # OpenVDB used by RayFronts and VDB Mapping visualization
 # Override install newer openvdb 9.1.0 for compatibility with Ubuntu 22.04  https://bugs.launchpad.net/bugs/1970108
-RUN apt remove -y libopenvdb*; \
+RUN apt purge libopenvdb* || true; \
   git clone --recurse --branch v9.1.0 https://github.com/wyca-robotics/openvdb.git /opt/openvdb && \
   mkdir /opt/openvdb/build && cd /opt/openvdb/build && \
-  cmake .. && \
+  cmake /opt/openvdb && \
   make -j8 && make install && \
-  cd ..; rm -rf /opt/openvdb/build
+  cd /opt/openvdb && rm -rf /opt/openvdb/build
 
 # ========== INSTALL ROS2 ==============
 # Install ROS2
@@ -77,14 +84,16 @@ ENV ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
 # Install any additional ROS2 packages
 RUN apt update -y && apt install -y \
   ros-dev-tools \
-  ros-humble-mavros \ 
-  ros-humble-tf2* \
-  ros-humble-stereo-image-proc \
-  ros-humble-image-view \
-  ros-humble-topic-tools \
-  ros-humble-grid-map \
   ros-humble-domain-bridge \
-  libcgal-dev \
+  ros-humble-grid-map \
+  ros-humble-image-view \
+  ros-humble-mavros \ 
+  ros-humble-nmea-msgs \
+  ros-humble-point-cloud-transport \
+  ros-humble-robot-localization \
+  ros-humble-stereo-image-proc \
+  ros-humble-tf2* \
+  ros-humble-topic-tools \
   python3-colcon-common-extensions \
   python3-rosdep \
   && rm -rf /var/lib/apt/lists/*
@@ -131,14 +140,16 @@ RUN pip3 install \
 # ========= ZEDX =========
 WORKDIR /tmp/
 
+RUN apt update && apt install -y ros-humble-zed-msgs ros-humble-cob-srvs && rm -rf /var/lib/apt/lists/*
+
 RUN if [ "$REAL_ROBOT" = "true" ]; then \
-  wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Ubuntu22_cuda12.1_v4.2.5.zstd.run ;\
+    wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Tegra_L4T36.4_v4.2.5.zstd.run ;\
   else \
-  wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Tegra_L4T36.4_v4.2.5.zstd.run ;\
+    wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Ubuntu22_cuda12.1_v4.2.5.zstd.run ;\
   fi
 
 RUN chmod +x zed_sdk.zstd.run && \
-  DEBIAN_FRONTEND="noninteractive" ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda && rm zed_sdk.zstd.run
+  ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda && rm zed_sdk.zstd.run
 
 # ========= MACVO =========
 

@@ -14,7 +14,7 @@ services:
     build:
       dockerfile: ./Dockerfile.robot
       args:
-        BASE_IMAGE: nvidia/cuda:12.6.3-devel-ubuntu22.04  # CUDA (with devel headers) required for ZED SDK
+        BASE_IMAGE: nvidia/cuda:12.6.3-devel-ubuntu22.04  # CUDA (with devel headers) required for ZED SDK. Match CUDA 12.6 to JetPack 6.2
       tags:
         - *desktop_image
     # we use tmux send-keys so that the session stays alive
