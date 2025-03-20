@@ -1,50 +1,63 @@
 <!-- ROBOT -->
 <launch>
-
+  <!-- =========== ARGUMENTS ========== -->
   <arg name="sim" default="true" />
-  
-  <push_ros_namespace namespace="$(env ROBOT_NAME)" />
-
   <set_parameter name="use_sim_time" value="true" if="$(var sim)" />
 
-  <!-- Sim -->
+  <!-- =========== LAUNCH ============= -->
+
+  <!-- prefix topics with /$ROBOT_NAME/ -->
+  <push_ros_namespace namespace="$(env ROBOT_NAME)" />
+
+
+  <!-- ~~~~~~~~~~~ INCLUDES ~~~~~~~~~ -->
+
+  <!-- Static TFs -->
+  <include file="$(find-pkg-share robot_bringup)/launch/static_transforms.launch.xml">
+    <arg name="sim" value="$(var sim)" />
+  </include>
+
+  <!-- Autonomy -->
+  <include file="$(find-pkg-share autonomy_bringup)/launch/autonomy.launch.xml">
+    <arg name="sim" value="$(var sim)" />
+  </include>
+
+  <!-- Logging -->
+  <include file="$(find-pkg-share logging_bringup)/launch/logging.launch.xml">
+    <arg name="sim" value="$(var sim)" />
+  </include>
+
+  <!-- Visualization and GUI (only in sim) -->
   <group if="$(var sim)">
-    <!-- GUI -->
     <node pkg="rviz2" exec="rviz2"
-	  args="-d $(find-pkg-share robot_bringup)/rviz/robot.rviz --ros-args --log-level INFO"
-	  output="screen" respawn="true" respawn_delay="1" />
-    
+      args="-d $(find-pkg-share robot_bringup)/rviz/robot.rviz --ros-args --log-level INFO"
+      output="screen" respawn="true" respawn_delay="1" />
+
     <push-ros-namespace namespace="behavior" />
     <node pkg="rqt_gui" exec="rqt_gui"
-          args="--perspective-file $(find-pkg-share robot_bringup)/config/core.perspective">
+      args="--perspective-file $(find-pkg-share robot_bringup)/config/core.perspective">
       <remap from="fixed_trajectory_command"
-             to="/$(env ROBOT_NAME)/fixed_trajectory_generator/fixed_trajectory_command" />
+        to="/$(env ROBOT_NAME)/fixed_trajectory_generator/fixed_trajectory_command" />
     </node>
   </group>
-  <!-- Real -->
+
+  <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
+
+  <!-- launch mavros on the real robot. when using sim, it launches in sim. -->
   <group unless="$(var sim)">
     <push-ros-namespace namespace="interface" />
     <include file="$(find-pkg-share mavros)/launch/apm.launch">
       <arg name="fcu_url" value="/dev/ttyTHS1:115200" />
     </include>
 
+    <!-- Domain Bridge -->
+    <node pkg="domain_bridge" exec="domain_bridge"
+      args="/root/ros_ws/src/robot_bringup/params/domain_bridge.yaml"
+      output="screen" respawn="true" respawn_delay="1" />
+
+    <!-- ~~~~~~~~~~~ EXECUTABLES ~~~~~~~~~ -->
+    <!-- auto record -->
     <executable cmd="ros2 bag record -a -o /bags/autonomy_$(env DATE)" />
   </group>
-
-  
-
-  <!-- Static TFs -->
-  <include file="$(find-pkg-share robot_bringup)/launch/static_transforms.launch.xml" />
-
-  <!-- Autonomy -->
-  <include file="$(find-pkg-share autonomy_bringup)/launch/autonomy.launch.xml" />
-
-  <!-- Logging -->
-  <include file="$(find-pkg-share logging_bringup)/launch/logging.launch.xml" />
-
-  <!-- Domain Bridge -->
-  <node pkg="domain_bridge" exec="domain_bridge"
-    args="/root/ros_ws/src/robot_bringup/params/domain_bridge.yaml"
-    output="screen" respawn="true" respawn_delay="1" />
 
 </launch>

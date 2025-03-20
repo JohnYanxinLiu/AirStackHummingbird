@@ -1,9 +1,16 @@
 <!-- PERCEPTION -->
 <launch>
+    <!-- =========== ARGUMENTS ========== -->
+    <arg name="sim" default="true" />
+    <set_parameter name="use_sim_time" value="true" if="$(var sim)" />
+
+    <!-- ~~~~~~~~~~~ INCLUDES ~~~~~~~~~ -->
+    <!-- None -->
+
+    <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
 
     <!-- State Estimation -->
     <!-- Visual Odometry -->
-
     <node pkg="macvo" exec="macvo" if="$(env USE_MACVO)">
         <param name="camera_config" value="$(find-pkg-share macvo)/config/model_config.yaml" />
         <param from="$(find-pkg-share macvo)/config/interface_config.yaml" />

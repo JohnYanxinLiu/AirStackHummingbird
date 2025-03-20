@@ -1,18 +1,27 @@
 <!-- GLOBAL -->
 <launch>
+    <!-- =========== ARGUMENTS ========== -->
+    <arg name="sim" default="true" />
+    <set_parameter name="use_sim_time" value="true" if="$(var sim)" />
+
+    <!-- =========== LAUNCH ============= -->
+
+    <!-- ~~~~~~~~~~~ INCLUDES ~~~~~~~~~ -->
     <!-- World Model -->
-    <include file="$(find-pkg-share vdb_mapping_ros2)/launch/vdb_mapping_ros2.py" >
+    <include file="$(find-pkg-share vdb_mapping_ros2)/launch/vdb_mapping_ros2.py">
         <arg name="config" value="$(find-pkg-share global_bringup)/config/vdb_params.yaml" />
     </include>
 
+    <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
     <!-- Planning -->
     <node pkg="random_walk_planner" exec="random_walk_planner" name="random_walk_planner"
         output="screen">
         <param from="$(find-pkg-share random_walk_planner)/config/random_walk_config.yaml" />
         <!-- <remap from="/tf" to="/$(env ROBOT_NAME)/tf" /> -->
-        <remap from="vdb_map_visualization" to="/$(env ROBOT_NAME)/vdb_mapping/vdb_map_visualization" />
+        <remap from="vdb_map_visualization"
+            to="/$(env ROBOT_NAME)/vdb_mapping/vdb_map_visualization" />
         <remap from="~/global_plan" to="/$(env ROBOT_NAME)/global_plan" />
     </node>
 
-    
+
 </launch>

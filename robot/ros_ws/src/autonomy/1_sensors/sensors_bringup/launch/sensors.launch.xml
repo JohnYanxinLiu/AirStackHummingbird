@@ -1,7 +1,25 @@
 <!-- SENSORS -->
 <launch>
-    <group>
-        <push-ros-namespace namespace="sensors"/>
-        <include file="$(find-pkg-share camera_param_server)/launch/camera_param_server.launch.xml"/>
-    </group>
+    <!-- =========== ARGUMENTS ========== -->
+    <arg name="sim" default="true" />
+    <set_parameter name="use_sim_time" value="true" if="$(var sim)" />
+
+    <!-- =========== LAUNCH ============= -->
+    <push-ros-namespace namespace="sensors" />
+
+    <!-- ~~~~~~~~~~~ INCLUDES ~~~~~~~~~ -->
+
+    <!-- Camera Parameter Server -->
+    <include file="$(find-pkg-share camera_param_server)/launch/camera_param_server.launch.xml" />
+
+    <!-- ZED-X Camera -->
+    <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
+        <arg name="camera_model" value="zedx" />
+        <arg name="sim_mode" value="$(arg sim)" />
+        <arg name="use_sim_time" value="$(arg sim)" />
+    </include>
+
+    <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
+    <!-- None -->
+
 </launch>

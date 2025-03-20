@@ -1,9 +1,17 @@
 <launch>
+    <!-- =========== ARGUMENTS ========== -->
+    <arg name="sim" default="true" />
+    <set_parameter name="use_sim_time" value="true" if="$(var sim)" />
 
+    <!-- =========== LAUNCH ============= -->
+
+    <!-- ~~~~~~~~~~~ INCLUDES ~~~~~~~~~ -->
+
+    <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
     <!-- the below is a hack to get ground truth TF from Isaac. this is to remove map noise for the
-    sponsor demo. set use_sim_ground_truth_tf to true for demo -->
+sponsor demo. set use_sim_ground_truth_tf to true for demo -->
     <!-- basically we publish the ground truth base link tf from isaac. we then substitute that to
-    the base_link tf -->
+the base_link tf -->
     <arg name="use_sim_ground_truth_tf" default="false" />
 
     <let name="convert_estimated_odom_to_tf" value="true" unless="$(var use_sim_ground_truth_tf)" />
@@ -16,18 +24,19 @@
         <param name="interface" value="mavros_interface::MAVROSInterface" />
         <param name="is_ardupilot" value="true" />
         <param name="post_takeoff_command_delay_time" value="10." />
-	
-	<remap from="ardupilot_takeoff" to="/$(env ROBOT_NAME)/takeoff_landing_planner/ardupilot_takeoff" />
+
+        <remap from="ardupilot_takeoff"
+            to="/$(env ROBOT_NAME)/takeoff_landing_planner/ardupilot_takeoff" />
     </node>
 
     <node pkg="mavros_interface" exec="position_setpoint_pub.py"
         namespace="interface"
         output="screen">
 
-      <param name="command_pose" value="False" />
-      <param name="max_velocity" value="1.0" />
-      <param name="target_frame" value="base_link" />
-      
+        <param name="command_pose" value="False" />
+        <param name="max_velocity" value="1.0" />
+        <param name="target_frame" value="base_link" />
+
     </node>
 
     <node pkg="robot_interface" namespace="odometry_conversion" exec="odometry_conversion"
@@ -52,8 +61,9 @@
         name="tf_base_link_is_ground_truth"
         args="0 0 0 0 0 0 base_link_ground_truth base_link" />
 
-    <!-- If using ground truth TF from sim, then create the stabilized TF from the ground truth TF, since 
-    odometry_conversion now isn't creating this from odometry estimate  -->
+    <!-- If using ground truth TF from sim, then create the stabilized TF from the ground truth TF,
+since 
+odometry_conversion now isn't creating this from odometry estimate  -->
     <group if="$(var use_sim_ground_truth_tf)">
         <node pkg="robot_interface" exec="stabilized_tf_node" output="screen">
             <param name="parent_frame" value="map_FLU" />
@@ -63,11 +73,11 @@
 
 
     <node pkg="drone_safety_monitor" exec="drone_safety_monitor"
-          namespace="drone_safety_monitor"
-          output="screen">
-      <param name="state_estimate_timeout" value="1.0" />
-      
-      <remap from="state_estimate" to="/$(env ROBOT_NAME)/odometry_conversion/odometry" />
+        namespace="drone_safety_monitor"
+        output="screen">
+        <param name="state_estimate_timeout" value="1.0" />
+
+        <remap from="state_estimate" to="/$(env ROBOT_NAME)/odometry_conversion/odometry" />
     </node>
-    
+
 </launch>
