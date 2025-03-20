@@ -15,8 +15,8 @@
     <!-- ZED-X Camera -->
     <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
         <arg name="camera_model" value="zedx" />
-        <arg name="sim_mode" value="$(arg sim)" />
-        <arg name="use_sim_time" value="$(arg sim)" />
+        <arg name="sim_mode" value="$(var sim)" />
+        <arg name="use_sim_time" value="$(var sim)" />
     </include>
 
     <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
