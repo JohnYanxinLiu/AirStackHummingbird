@@ -94,6 +94,7 @@ RUN apt update -y && apt install -y \
   ros-humble-stereo-image-proc \
   ros-humble-tf2* \
   ros-humble-topic-tools \
+  ros-humble-xacro \
   python3-colcon-common-extensions \
   python3-rosdep \
   && rm -rf /var/lib/apt/lists/*
