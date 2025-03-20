@@ -2701,7 +2701,8 @@
             },
             "exts": {
                 "enabled": {
-                    "0": "airlab.airstack-1.19.1",
+                    "0": "sl.sensor.camera-2.0.1",
+                    "1": "airlab.airstack-1.19.1"
                 }
             },
             "window": {
