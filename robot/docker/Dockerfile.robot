@@ -168,3 +168,7 @@ RUN pip install -U colcon-common-extensions
 # Fixes for MACVO Integration
 RUN pip install huggingface_hub
 RUN pip uninstall matplotlib -y
+
+# Install dependencies for Gremsy-ROS2 SDK
+RUN apt-get update && apt-get install -y \
+    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libimath-dev
