@@ -73,7 +73,7 @@ RUN /opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
 
 RUN /isaac-sim/python.sh -m pip install git+https://github.com/dronekit/dronekit-python#egg=dronekit
 RUN pip install PyYAML mavproxy tmuxp scipy
-
+RUN rosdep init && rosdep update
 
 # ========== INSTALL ISAAC-ROS2 ==============
 ARG isaac_dir_name="IsaacSim-ros_workspaces-IsaacSim-${ISAAC_VERSION}"
@@ -88,6 +88,22 @@ RUN cd /tmp/ && \
     colcon build --symlink-install && \
     rm -rf /tmp/IsaacSim-${ISAAC_VERSION}.zip /tmp/${isaac_dir_name}
 
+# ========== INSTALL ZED SDK AND ZED ROS2 WRAPPER ==============
+WORKDIR /humble_ws
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+RUN wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Ubuntu22_cuda12.1_v4.2.5.zstd.run && \
+    chmod +x zed_sdk.zstd.run && \
+    ./zed_sdk.zstd.run -- silent runtime_only skip_od_module && rm zed_sdk.zstd.run
+
+RUN git clone https://github.com/stereolabs/zed-ros2-wrapper.git /humble_ws/src && \
+    git clone git@github.com:stereolabs/zed-ros2-examples.git /humble_ws/src && \
+    apt update && rosdep update && rosdep install --from-paths src --ignore-src -r -y && \
+    . /opt/ros/humble/setup.sh && \
+    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --parallel-workers $(nproc)
+
 # ========== INSTALL DRONE DEPENDENCIES ==============
 # Install mavlink-router
 RUN apt update && apt install -y meson ninja-build && rm -rf /var/lib/apt/lists/*
@@ -97,13 +113,6 @@ RUN meson setup build .
 RUN ninja -C build install
 RUN rm -rf /mavlink-router
 WORKDIR /isaac-sim
-
-# ========== INSTALL ZED SDK ==============
-WORKDIR /tmp/
-
-RUN wget -O zed_sdk.zstd.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.2/ZED_SDK_Ubuntu22_cuda12.1_v4.2.5.zstd.run && \
-    chmod +x zed_sdk.zstd.run && \
-    ./zed_sdk.zstd.run -- silent runtime_only skip_od_module skip_cuda && rm zed_sdk.zstd.run
 
 # ========== INSTALL ASCENT EXTENSION ==============
 # copy over the AscentAeroSystemsSITLPackage
