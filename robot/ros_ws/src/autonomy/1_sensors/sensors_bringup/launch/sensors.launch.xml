@@ -13,10 +13,11 @@
     <include file="$(find-pkg-share camera_param_server)/launch/camera_param_server.launch.xml" />
 
     <!-- ZED-X Camera -->
-    <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
+    <!-- Only launch if on real robot and sim is FALSE. This is because when sim=true, we run this on the Isaac Container -->
+    <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py" unless="$(var sim)" >
         <arg name="camera_model" value="zedx" />
-        <arg name="sim_mode" value="$(var sim)" />
-        <arg name="use_sim_time" value="$(var sim)" />
+        <arg name="sim_mode" value="false" />
+        <arg name="use_sim_time" value="false" />
     </include>
 
     <!-- ~~~~~~~~~~~ NODES ~~~~~~~~~ -->
