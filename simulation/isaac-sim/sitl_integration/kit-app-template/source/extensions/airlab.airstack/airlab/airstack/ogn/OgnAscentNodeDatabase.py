@@ -531,11 +531,12 @@ class OgnAscentNodeDatabase(og.Database):
 
                             threading.Thread(target=f).start()
                     else:
+                        # NED to ENU rotation
                         r = dronekit_connection._roll
-                        p = dronekit_connection._pitch
-                        y = dronekit_connection._yaw
+                        p = -dronekit_connection._pitch
+                        y = np.pi/2 - dronekit_connection._yaw
 
-                        rot = Rotation.from_euler("xyz", [r, p, -y], degrees=False)
+                        rot = Rotation.from_euler("xyz", [r, p, y], degrees=False)
                         # quaternion: xyzw
                         q = rot.as_quat()
 
@@ -555,8 +556,8 @@ class OgnAscentNodeDatabase(og.Database):
                             else:
                                 prim.GetAttribute("xformOp:orient").Set(o)
 
-                            forward, left, up = north, -east, -down
-                            p = (forward, left, up)  # FLU
+                            x, y, z = east, north, -down
+                            p = (x, y, z)
                             prim.GetAttribute("xformOp:translate").Set(p)
                             if prop:
                                 incremental_rotate(prop)

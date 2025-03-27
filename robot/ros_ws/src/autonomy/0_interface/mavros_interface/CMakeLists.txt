@@ -49,7 +49,7 @@ install(
   RUNTIME DESTINATION bin
 )
 
-install(PROGRAMS scripts/position_setpoint_pub.py DESTINATION lib/${PROJECT_NAME})
+install(PROGRAMS scripts/position_setpoint_pub.py scripts/print_rotation.py DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
