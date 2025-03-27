@@ -1,10 +1,10 @@
 /**:
   ros__parameters:
-    base_frame: map_nwu
+    base_frame: map
 
     odoms_to_transform: ["macvo_odom"]
 
     macvo_odom:
       topic_in: odometry
-      source_frame: map_ned
-      topic_out: odometry_nwu
+      source_frame: robot_origin_ned
+      topic_out: odometry_map_frame

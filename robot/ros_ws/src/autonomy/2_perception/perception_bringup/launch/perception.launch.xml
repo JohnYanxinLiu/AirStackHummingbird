@@ -31,12 +31,6 @@
             <remap from="sensors/get_camera_params"
                 to="/$(env ROBOT_NAME)/sensors/get_camera_params" />
         </node>
-
-        <!-- <node pkg="odom_transformer" exec="transformer_node.py"
-            name="odom_transformer_macvo_ned_to_nwu">
-            <param
-                from="$(find-pkg-share perception_bringup)/config/odom_transformer_macvo_params.yaml" />
-        </node> -->
     </group>
 
 

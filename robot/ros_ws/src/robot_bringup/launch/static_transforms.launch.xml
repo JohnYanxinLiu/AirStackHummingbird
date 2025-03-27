@@ -12,6 +12,22 @@
         exec="static_transform_publisher"
         name="static_transform_publisher"
         args="0 0 0 1.5708 0 3.14159 map map_ned" />
+    <node
+        pkg="tf2_ros"
+        exec="static_transform_publisher"
+        name="static_transform_publisher"
+        args="0 0 0 0 0 -3.14159 base_link_ned base_link" />
+
+    <node
+        pkg="tf2_ros"
+        exec="static_transform_publisher"
+        name="static_transform_publisher"
+        args="0 0 0.11 1.69297 0 0 map robot_origin" />
+    <node
+        pkg="tf2_ros"
+        exec="static_transform_publisher"
+        name="static_transform_publisher"
+        args="0 0 -0.11 0 0 3.14159 robot_origin robot_origin_ned" />
 
     <!-- ====== Robot TFs ========= -->
     <!-- currently none -->
