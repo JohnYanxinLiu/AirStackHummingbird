@@ -12,12 +12,8 @@
         exec="static_transform_publisher"
         name="static_transform_publisher"
         args="0 0 0 1.5708 0 3.14159 map map_ned" />
-    <node
-        pkg="tf2_ros"
-        exec="static_transform_publisher"
-        name="static_transform_publisher"
-        args="0 0 0 0 0 -3.14159 base_link_ned base_link" />
 
+    <!-- This is a sim hack. Our SITL for some dumb reason starts out rotated at 97 degrees. MACVO doesn't know that, therefore we need this transform -->
     <node
         pkg="tf2_ros"
         exec="static_transform_publisher"
@@ -28,6 +24,12 @@
         exec="static_transform_publisher"
         name="static_transform_publisher"
         args="0 0 -0.11 0 0 3.14159 robot_origin robot_origin_ned" />
+    <!-- Transform MACVO's NED back to ENU -->
+    <node
+        pkg="tf2_ros"
+        exec="static_transform_publisher"
+        name="static_transform_publisher"
+        args="0 0 0 0 0 -3.14159 base_link_ned base_link" />
 
     <!-- ====== Robot TFs ========= -->
     <!-- currently none -->

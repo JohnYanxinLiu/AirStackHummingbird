@@ -152,7 +152,7 @@ std::tuple<float, float, float> RandomWalkPlanner::generate_goal_point(
         float rand_x = std::get<0>(start_point) + delta_x;
         float rand_y = std::get<1>(start_point) + delta_y;
         float rand_z = std::get<2>(start_point) + delta_z;
-        rand_z = std::max(0.5f, rand_z); // ensure don't go below the ground
+        rand_z = std::max(1.0f, rand_z); // ensure don't go below the ground
         std::tuple<float, float, float> rand_point(rand_x, rand_y, rand_z);
         std::tuple<float, float, float> start_point_wo_yaw(
             std::get<0>(start_point), std::get<1>(start_point), std::get<2>(start_point));
