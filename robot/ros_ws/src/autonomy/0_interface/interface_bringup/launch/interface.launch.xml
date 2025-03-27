@@ -32,7 +32,8 @@
 
     <node pkg="robot_interface" namespace="odometry_conversion" exec="odometry_conversion"
         output="screen">
-        <remap from="odometry_in" to="/$(env ROBOT_NAME)/interface/mavros/local_position/odom" />
+        <!-- <remap from="odometry_in" to="/$(env ROBOT_NAME)/interface/mavros/local_position/odom" /> -->
+        <remap from="odometry_in" to="/$(env ROBOT_NAME)/macvo/odometry" />
         <remap from="odometry_out" to="odometry" />
 
         <param name="odom_input_qos_is_best_effort" value="true" />

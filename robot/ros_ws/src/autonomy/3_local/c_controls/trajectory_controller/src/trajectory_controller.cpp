@@ -184,7 +184,8 @@ void TrajectoryControlNode::timer_callback() {
     prev_execute_time = curr_execute_time;
 
     if (!got_odom) {
-        RCLCPP_INFO_STREAM(this->get_logger(), "Waiting to receive odometry.");
+        auto& clock = *this->get_clock();
+        RCLCPP_INFO_THROTTLE(this->get_logger(), clock, 2000, "Waiting to receive odometry.");
         return;
     }
 
