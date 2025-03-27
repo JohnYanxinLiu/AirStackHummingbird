@@ -46,7 +46,8 @@ Copy your omnigraph template them into the top-level `Omnigraph` component, name
 ## Frame Conventions
 Isaac Sim uses Forward-Left-Up (FLU) coordinate frame conventions.  However, MAVROS and AirStack use East-North-Up (ENU). 
 
-To address this, the origin of the robot lives under a prim called `map_FLU`. Then AirStack publishes a static transform (`static_transforms.launch.xml`) from `map_FLU` to `map`, which is in ENU. The transform is a 90 degree rotation about the Z-axis. 
+To address this, the origin of the robot lives under a prim called `map_enu`, which transforms is a -90 degree rotation about the Z-axis. 
+DO NOT MOVE `map_enu` NOR `TEMPLATE_spirit_uav.robot.usd` from the origin in your scene as this will break the transformation chain. ONLY move the child spirit_uav prim.
 
 The resulting TF tree looks like this:
 ![Image of tf tree](tf_tree.png)

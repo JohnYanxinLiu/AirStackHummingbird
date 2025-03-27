@@ -21,7 +21,7 @@
     </node> -->
     <group if="$(env USE_MACVO)">
         <push-ros-namespace namespace="macvo" />
-        <node pkg="macvo2" exec="macvo2" if="$(env USE_MACVO)" output="screen">
+        <node pkg="macvo2" exec="macvo2" output="screen">
             <param name="camera_config" value="$(find-pkg-share macvo2)/config/model_config.yaml" />
             <param from="$(find-pkg-share macvo2)/config/interface_config.yaml" />
             <remap from="left/image_rect"
@@ -33,15 +33,9 @@
         </node>
 
         <!-- <node pkg="odom_transformer" exec="transformer_node.py"
-            name="odom_transformer_macvo_ned_to_enu"
-            if="$(env USE_MACVO)">
-            <param name="input_odom_topic" value="/$(env ROBOT_NAME)/macvo/visual_odometry_pose" />
-            <param name="output_odom_topic"
-                value="/$(env ROBOT_NAME)/perception/visual_odometry_pose" />
-            <param name="output_odom_frame_id" value="map" />
-            <param name="output_odom_child_frame_id" value="base_link" />
-            <param name="output_odom_type" value="2" />
-            <param name="output_odom_qos_is_best_effort" value="true" />
+            name="odom_transformer_macvo_ned_to_nwu">
+            <param
+                from="$(find-pkg-share perception_bringup)/config/odom_transformer_macvo_params.yaml" />
         </node> -->
     </group>
 
@@ -57,10 +51,10 @@
             to="/$(env ROBOT_NAME)/sensors/front_stereo/right/camera_info" />
     </node>
 
-    <!-- Visualizer -->
-    <node pkg="image_view" exec="disparity_view"
+    <!-- Visualizer TODO: DELETE ME-->
+    <!-- <node pkg="image_view" exec="disparity_view"
         namespace="disparity_view">
         <remap from="image" to="/$(env ROBOT_NAME)/stereo_image_proc/disparity" />
-    </node>
+    </node> -->
 
 </launch>

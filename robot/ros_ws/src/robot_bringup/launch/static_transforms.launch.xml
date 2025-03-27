@@ -4,14 +4,15 @@
         pkg="tf2_ros"
         exec="static_transform_publisher"
         name="static_transform_publisher"
-        args="0 0 0 -1.5708 0 0 map_FLU map" />
+        args="0 0 0 0 0 0 mavros_enu map" />
 
-    <!-- Some packages like MACVO publishe in map_ned. Create a transform from map(enu) to map_ned -->
+    <!-- Some packages like MACVO publishe in map_ned. Create a transform from map_enu to map_ned -->
     <node
         pkg="tf2_ros"
         exec="static_transform_publisher"
         name="static_transform_publisher"
         args="0 0 0 1.5708 0 3.14159 map map_ned" />
+
     <!-- ====== Robot TFs ========= -->
     <!-- currently none -->
 </launch>
