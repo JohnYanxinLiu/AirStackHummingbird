@@ -64,3 +64,9 @@ services:
       - ../sitl_integration:/sitl_integration:rw
       - ../sitl_integration/inputrc:/etc/inputrc
       - ../sitl_integration/config:/root/.nvidia-omniverse/config:rw
+
+  # standalone isaac-sim editor
+  isaac-sim-editor:
+    extends:
+      service: isaac-sim
+    command: /isaac-sim/runapp.sh
