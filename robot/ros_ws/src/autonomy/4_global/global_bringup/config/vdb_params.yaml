@@ -23,7 +23,7 @@
     apply_raw_sensor_data: true
     sources: [ouster]
     ouster:
-      topic: sensors/ouster/point_cloud
+      topic: sensors/ouster/point_cloud 
       sensor_origin_frame: ouster
 
     # Remote mapping

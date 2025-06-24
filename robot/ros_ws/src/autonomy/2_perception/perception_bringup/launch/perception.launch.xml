@@ -48,9 +48,9 @@
     </node>
 
     <!-- Visualizer -->
-    <node pkg="image_view" exec="disparity_view"
+    <!--node pkg="image_view" exec="disparity_view" #(Yunwoo)
         namespace="disparity_view">
         <remap from="image" to="/$(env ROBOT_NAME)/stereo_image_proc/disparity" />
-    </node>
+    </node-->
 
 </launch>

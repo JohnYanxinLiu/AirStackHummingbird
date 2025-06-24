@@ -10,7 +10,6 @@
     <let name="convert_estimated_odom_to_tf" value="true" unless="$(var use_sim_ground_truth_tf)" />
     <let name="convert_estimated_odom_to_tf" value="false" if="$(var use_sim_ground_truth_tf)" />
     -->
-
     <node pkg="robot_interface" exec="robot_interface_node"
         namespace="interface"
         output="screen">
@@ -56,7 +55,10 @@
         <param name="restamp_now_post" value="true" />
 	-->
     </node>
-
+    <include file="$(find-pkg-share multi_agent_bridge)/launch/multi_agent_bridge.py">
+    	<arg name="robot_name" value="$(env ROBOT_NAME)"/>
+	<arg name="num_robot" value="2"/>
+    </include>
     <!--
     <node
         pkg="tf2_ros"
