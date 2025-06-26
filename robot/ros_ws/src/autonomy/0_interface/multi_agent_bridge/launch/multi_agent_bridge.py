@@ -15,13 +15,13 @@ def generate_launch_description():
             executable = 'multi_agent_bridge',
             name='multi_agent_bridge',
             output="screen",
-            parameters=[{'robot_name': robot_name},{'num_robot': num_robot},{'local_map_frame_id': 'map'},{'local_mavros_frame_id': 'mavros_enu'},{'global_map_frame_id': 'world'},{'x_size': 0.4,'y_size': 0.4,'z_size': 1.0},{'neighbor_mask': True}]
+            parameters=[{'robot_name': robot_name,
+                         'num_robot': num_robot,
+                         'local_map_frame_id': 'map',
+                         'local_mavros_frame_id': 'mavros_enu',
+                         'global_map_frame_id': 'world',
+                         'x_size': 0.5,'y_size': 0.5,'z_size': 1.0,
+                         'neighbor_mask': True}],
+            condition=IfCondition(PythonExpression([num_robot, ' > 1']))
             ),
-        #Node(
-        #    package ='tf2_ros',
-        #    executable='static_transform_publisher',
-        #    name='static_tf_pub',
-        #    arguments=['0','0','0','-1.57079632679','0','0',"mavros_enu","map"],
-        #    output='screen'
-        #    ),
     ])

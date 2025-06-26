@@ -57,7 +57,7 @@
     </node>
     <include file="$(find-pkg-share multi_agent_bridge)/launch/multi_agent_bridge.py">
     	<arg name="robot_name" value="$(env ROBOT_NAME)"/>
-	<arg name="num_robot" value="2"/>
+	<arg name="num_robot" value="$(env NUM_ROBOTS)"/>
     </include>
     <!--
     <node

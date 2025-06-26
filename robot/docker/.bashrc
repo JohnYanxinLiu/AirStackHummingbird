@@ -190,4 +190,3 @@ if [ "$ROBOT_NAME" == "null" ]; then
 fi
 
 export RCUTILS_COLORIZED_OUTPUT=1  # get colored output from ROS2 tools
-
