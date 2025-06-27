@@ -12,7 +12,9 @@
   
   <node pkg="domain_bridge" exec="domain_bridge" args="$(find-pkg-share gcs_bringup)/config/domain_bridge.yaml">
   </node>
-
+  <node pkg="gcs_bringup" exec="gcs_bringup_node" output="screen">
+	<param name="num_robot" value="$(env NUM_ROBOTS)" />  
+  </node>	  
   <!--
   <include file="$(find-pkg-share domain_bridge)/launch/domain_bridge.launch.xml">
     <arg name="config" value="$(find-pkg-share domain_bridge)/examples/example_bridge_config.yaml" />

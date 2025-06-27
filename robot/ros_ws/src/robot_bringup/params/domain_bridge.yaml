@@ -27,7 +27,12 @@ topics:
   /robot_1/global_pose: #(Yunwoo)
     from_domain: 1
     to_domain: 3
-    type: geometry_msgs/msg/TransformStamped  
+    type: geometry_msgs/msg/TransformStamped
+    
+  /robot_1/global_pose: #(Yunwoo)
+    from_domain: 1
+    to_domain: 0
+    type: geometry_msgs/msg/TransformStamped      
     
   /robot_2/vdb_mapping/vdb_map_visualization:
     from_domain: 2
@@ -48,6 +53,11 @@ topics:
     from_domain: 2
     to_domain: 3
     type: geometry_msgs/msg/TransformStamped
+    
+  /robot_2/global_pose: #(Yunwoo)
+    from_domain: 2
+    to_domain: 0
+    type: geometry_msgs/msg/TransformStamped
 
   /robot_3/vdb_mapping/vdb_map_visualization:
     from_domain: 3
@@ -67,6 +77,11 @@ topics:
   /robot_3/global_pose: #(Yunwoo)
     from_domain: 3
     to_domain: 2
+    type: geometry_msgs/msg/TransformStamped
+    
+  /robot_3/global_pose: #(Yunwoo)
+    from_domain: 3
+    to_domain: 0
     type: geometry_msgs/msg/TransformStamped
     
   robot_2/interface/mavros/state:
