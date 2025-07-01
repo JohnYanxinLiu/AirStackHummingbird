@@ -59,6 +59,11 @@
     	<arg name="robot_name" value="$(env ROBOT_NAME)"/>
 	<arg name="num_robot" value="$(env NUM_ROBOTS)"/>
     </include>
+    <include file="$(find-pkg-share single_agent_bridge)/launch/single_agent_bridge.py">
+        <arg name="robot_name" value="$(env ROBOT_NAME)"/>
+        <arg name="num_robot" value="$(env NUM_ROBOTS)"/>
+    </include>
+
     <!--
     <node
         pkg="tf2_ros"
