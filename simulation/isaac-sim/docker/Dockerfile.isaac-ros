@@ -88,6 +88,14 @@ RUN ninja -C build install
 RUN rm -rf /mavlink-router
 WORKDIR /isaac-sim
 
+# Install PX4
+WORKDIR /
+RUN git clone -b v1.14.3 https://github.com/PX4/PX4-Autopilot.git --recursive
+WORKDIR /PX4-Autopilot
+RUN pip3 install kconfiglib jinja2 empy jsonschema pyros-genmsg packaging toml numpy future
+RUN make px4_sitl_default
+WORKDIR /isaac-sim
+
 # copy over the AscentAeroSystemsSITLPackage
 COPY sitl_integration/AscentAeroSystemsSITLPackage /AscentAeroSystemsSITLPackage
 
