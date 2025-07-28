@@ -735,7 +735,7 @@ class OgnAscentNodeDatabase(og.Database):
                 needs_initializing = initialize_type_function(node_type)
             if needs_initializing:
                 node_type.set_metadata(ogn.MetadataKeys.EXTENSION, "airlab.pegasus")
-                node_type.set_metadata(ogn.MetadataKeys.UI_NAME, "Ascent Node")
+                node_type.set_metadata(ogn.MetadataKeys.UI_NAME, "Pegasus Node")
                 node_type.set_metadata(ogn.MetadataKeys.CATEGORIES, "pegasus")
                 node_type.set_metadata(
                     ogn.MetadataKeys.DESCRIPTION,
