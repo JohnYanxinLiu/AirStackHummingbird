@@ -19,3 +19,6 @@
 [submodule "robot/ros_ws/src/autonomy/5_behavior"]
 	path = robot/ros_ws/src/autonomy/5_behavior
 	url = https://github.com/JohnYanxinLiu/HummingbirdAirStack_5_behavior.git
+[submodule "robot/ros_ws/src/autonomy/3_local/b_planners/wire_approach_planner"]
+	path = robot/ros_ws/src/autonomy/3_local/b_planners/wire_approach_planner
+	url = https://github.com/JohnYanxinLiu/HummingbirdAirStack_3_local_planner_wire_approach.git
