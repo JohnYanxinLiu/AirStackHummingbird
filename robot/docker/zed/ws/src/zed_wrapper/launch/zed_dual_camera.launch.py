@@ -34,7 +34,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(launch_file_path),
             launch_arguments={
                 'namespace': 'robot_1/sensors',
-                'camera_name': 'front_stereo',
+                'camera_name': 'down_stereo',
                 'camera_model': 'zedx',
                 'serial_number': LaunchConfiguration('wire_cam_serial'),
                'config_path': os.path.join(get_package_share_directory('zed_wrapper'),'config','wire_common.yaml'),
