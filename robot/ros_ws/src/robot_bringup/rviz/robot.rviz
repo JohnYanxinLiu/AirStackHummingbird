@@ -365,6 +365,16 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /robot_1/macvo/odometry
           Value: true
+        - Class: rviz_default_plugins/Pose
+          Color: 255; 0; 0
+          Enabled: true
+          Name: Wire Pose
+          Shape: Arrow
+          Shaft Length: 0.3
+          Head Length: 0.5
+          Topic:
+            Value: /robot_1/perception/wire_detection
+          Value: true
       Enabled: true
       Name: Perception
     - Class: rviz_common/Group
