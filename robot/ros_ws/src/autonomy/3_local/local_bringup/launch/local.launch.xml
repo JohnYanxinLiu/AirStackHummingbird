@@ -5,8 +5,8 @@
     <!-- <arg name="local_disparity_in_topic" default="/$(env ROBOT_NAME)/perception/macvo/disparity" /> -->
     <!-- <arg name="local_depth_in_topic" default="none" /> -->
     <arg name="local_disparity_in_topic" default="none" />
-    <arg name="local_depth_in_topic" default="/$(env ROBOT_NAME)/sensors/front_stereo/right/depth_ground_truth" />
-    <arg name="local_camera_info_in_topic" default="/$(env ROBOT_NAME)/sensors/front_stereo/right/camera_info" />
+    <arg name="local_depth_in_topic" default="/$(env ROBOT_NAME)/sensors/down_stereo/right/depth_ground_truth" />
+    <arg name="local_camera_info_in_topic" default="/$(env ROBOT_NAME)/sensors/down_stereo/right/camera_info" />
 
     <log message="local_odometry_in_topic has $(var local_odometry_in_topic)"/>
 
@@ -34,6 +34,21 @@
             to="/$(env ROBOT_NAME)/trajectory_controller/tracking_point" />
         <remap from="odometry" to="$(var local_odometry_in_topic)" />
         <remap from="mavros/cmd/takeoff" to="/$(env ROBOT_NAME)/interface/mavros/cmd/takeoff" />
+    </node>
+
+    <!-- Wire Approach Planner -->
+    <node pkg="wire_approach_planner"
+        namespace="wire_approach_planner"
+        exec="wire_approach_planner" output="screen">
+        <param from="$(find-pkg-share wire_approach_planner)/config/wire_approach_planner.yaml"
+            allow_substs="true" />
+
+        <!-- remap glue to AirStack -->
+        <remap from="wire_detection"
+            to="/$(env ROBOT_NAME)/perception/wire_detection" />
+        <remap from="odometry" to="$(var local_odometry_in_topic)" />
+        <remap from="trajectory_override"
+            to="/$(env ROBOT_NAME)/trajectory_controller/trajectory_override" />
     </node>
 
     <group>
