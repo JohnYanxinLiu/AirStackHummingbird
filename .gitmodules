@@ -28,3 +28,6 @@
 [submodule "common/ros_packages/robot_descriptions/hummingbird_iris_with_sensors_description"]
 	path = common/ros_packages/robot_descriptions/hummingbird_iris_with_sensors_description
 	url = https://github.com/JohnYanxinLiu/HummingbirdAirStack_RobotDescription.git
+[submodule "robot/ros_ws/src/autonomy/2_perception/wire_perception"]
+	path = robot/ros_ws/src/autonomy/2_perception/wire_perception
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_2_perception_wire_perception.git
