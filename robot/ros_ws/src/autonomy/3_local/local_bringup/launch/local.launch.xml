@@ -43,9 +43,8 @@
         <param from="$(find-pkg-share wire_approach_planner)/config/wire_approach_planner.yaml"
             allow_substs="true" />
 
-        <!-- remap glue to AirStack -->
-        <remap from="wire_detection"
-            to="/$(env ROBOT_NAME)/perception/wire_detection" />
+        <remap from="wire_offset_from_robot"
+            to="/$(env ROBOT_NAME)/perception/wire_offset_from_robot" />
         <remap from="odometry" to="$(var local_odometry_in_topic)" />
         <remap from="trajectory_override"
             to="/$(env ROBOT_NAME)/trajectory_controller/trajectory_override" />
