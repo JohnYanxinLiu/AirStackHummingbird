@@ -25,3 +25,6 @@
 [submodule "robot/ros_ws/src/autonomy/2_perception/wire_tracker"]
 	path = robot/ros_ws/src/autonomy/2_perception/wire_tracker
 	url = https://github.com/JohnYanxinLiu/HummingbirdAirStack_2_perception_planner_wire_tracker.git
+[submodule "common/ros_packages/robot_descriptions/hummingbird_iris_with_sensors_description"]
+	path = common/ros_packages/robot_descriptions/hummingbird_iris_with_sensors_description
+	url = https://github.com/JohnYanxinLiu/HummingbirdAirStack_RobotDescription.git
