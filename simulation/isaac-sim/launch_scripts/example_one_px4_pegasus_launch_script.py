@@ -54,6 +54,7 @@ for ext in [
     "omni.graph.ui_nodes",              # UI node building helpers
     "airlab.pegasus",                   # Airlab extension Pegasus core extension
     "pegasus.simulator",
+    "isaacsim.asset.exporter.urdf",     # URDF importer/exporter after prim is created
 ]:
     if not ext_manager.is_extension_enabled(ext):
         ext_manager.set_extension_enabled(ext, True)
@@ -74,7 +75,8 @@ class PegasusApp:
         self.world = self.pg.world
 
         # Load default environment. You can replace with url or file path of any desired environment.
-        self.pg.load_environment(SIMULATION_ENVIRONMENTS["Curved Gridroom"])
+        self.pg.load_environment(SIMULATION_ENVIRONMENTS["Flat Plane"])
+        # self.pg.load_environment("/root/AirStack/assets/Scene_Templates_NVD@10011/Assets/Scenes/Templates/Basic/clean_cloudy_sky_and_floor.usd")
         
         # Spawn a PX4 multirotor drone with a specified vehicle ID and domain ID
         # PX4 udp port = 14540 + (vehicle_id)
@@ -89,23 +91,34 @@ class PegasusApp:
             init_orient=[0.0, 0.0, 0.0, 1.0],
         )
 
-        # Add a ZED stereo camera (with an associated subgraph) to the drone
+        # Down stereo ZED camera
         add_zed_stereo_camera_subgraph(
             parent_graph_handle=graph_handle,
             drone_prim="/World/drone/base_link",
-            camera_name="ZEDCamera",
-            camera_offset = [0.1, 0.0, 0.0], # X, Y, Z offset from drone base_link
-            camera_rotation_offset = [0.0, 0.0, 0.0], # Rotation in degrees (roll, pitch, yaw)
+            camera_name="DownZEDCamera",
+            camera_offset = [0.0, 0.0, -0.05], # X, Y, Z offset from drone base_link
+            camera_orientation_offset = [0.0, 90.0, 0.0], # Rotation (X, Y, Z) in degrees
+            stereo_topic_namespace="down_stereo"
         )
 
-        # Add an Ouster lidar (with an associated subgraph) to the drone
-        add_ouster_lidar_subgraph(
+        # Up stereo ZED camera
+        add_zed_stereo_camera_subgraph(
             parent_graph_handle=graph_handle,
             drone_prim="/World/drone/base_link",
-            lidar_name="OS1_REV6_128_10hz___512_resolution",
-            lidar_offset = [0.0, 0.0, 0.025], # X, Y, Z offset from drone base_link
-            lidar_rotation_offset = [0.0, 0.0, 0.0], # Rotation in degrees (roll, pitch, yaw)
+            camera_name="UpZEDCamera",
+            camera_offset = [0.0, 0.0, 0.07], # X, Y, Z offset from drone base_link
+            camera_orientation_offset = [0.0, -90.0, 0.0], # Rotation (X, Y, Z) in degrees
+            stereo_topic_namespace="up_stereo"
         )
+
+        # # Add an Ouster lidar (with an associated subgraph) to the drone
+        # add_ouster_lidar_subgraph(
+        #     parent_graph_handle=graph_handle,
+        #     drone_prim="/World/drone/base_link",
+        #     lidar_name="OS1_REV6_128_10hz___512_resolution",
+        #     lidar_offset = [0.0, 0.0, 0.1], # X, Y, Z offset from drone base_link
+        #     lidar_rotation_offset = [0.0, 0.0, 0.0], # Rotation in degrees
+        # )
         
         # Reset so physics/articulations are ready
         self.world.reset()
