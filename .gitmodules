@@ -16,3 +16,18 @@
 [submodule "robot/ros_ws/src/autonomy/0_interface/mavros"]
 	path = robot/ros_ws/src/autonomy/0_interface/mavros
 	url = https://github.com/castacks/mavros.git
+[submodule "common/ros_packages/robot_descriptions/hummingbird_drone_description"]
+	path = common/ros_packages/robot_descriptions/hummingbird_drone_description
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_RobotDescription.git
+[submodule "robot/ros_ws/src/autonomy/2_perception/wire_perception"]
+	path = robot/ros_ws/src/autonomy/2_perception/wire_perception
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_2_perception_wire_perception.git
+[submodule "robot/ros_ws/src/autonomy/5_behavior"]
+	path = robot/ros_ws/src/autonomy/5_behavior
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_5_behavior.git
+[submodule "robot/ros_ws/src/autonomy/3_local/b_planners/wire_approach_planner"]
+	path = robot/ros_ws/src/autonomy/3_local/b_planners/wire_approach_planner
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_3_local_planner_wire_approach.git
+[submodule "robot/ros_ws/src/autonomy/2_perception/wire_perception_placeholder"]
+	path = robot/ros_ws/src/autonomy/2_perception/wire_perception_placeholder
+	url = git@github.com:JohnYanxinLiu/HummingbirdAirStack_2_perception_planner_wire_tracker.git
