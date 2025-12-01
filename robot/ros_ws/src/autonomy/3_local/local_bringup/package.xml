@@ -9,6 +9,15 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <!-- Runtime dependencies -->
+  <depend>trajectory_library</depend>
+  <depend>takeoff_landing_planner</depend>
+  <depend>wire_approach_planner</depend>
+  <depend>droan_local_planner</depend>
+  <depend>disparity_expansion</depend>
+  <depend>trajectory_controller</depend>
+  <depend>pid_controller</depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
