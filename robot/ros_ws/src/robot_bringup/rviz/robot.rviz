@@ -231,28 +231,28 @@ Visualization Manager:
           Max Value: 1
           Median window: 5
           Min Value: 0
-          Name: Front Right RGB
+          Name: Up Right RGB
           Normalize Range: true
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /robot_1/sensors/front_stereo/right/image_rect
+            Value: /robot_1/sensors/up_stereo/right/image_rect
           Value: true
         - Class: rviz_default_plugins/Image
           Enabled: true
           Max Value: 100
           Median window: 5
           Min Value: 0
-          Name: Front Right Depth
+          Name: Up Right Depth
           Normalize Range: false
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: sensors/front_stereo/right/depth_ground_truth
+            Value: sensors/up_stereo/right/depth_ground_truth
           Value: true
         - Alpha: 1
           Autocompute Intensity Bounds: true
@@ -431,6 +431,43 @@ Visualization Manager:
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /robot_1/macvo/odometry
+          Value: true
+        - Class: rviz_default_plugins/Marker
+          Enabled: true
+          Name: Wire Detection Markers
+          Namespaces:
+            wires: true
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /robot_1/perception/wire_perception/wire_detection/detections_3d_viz
+          Value: true
+        - Class: rviz_default_plugins/Marker
+          Enabled: true
+          Name: Wire Tracking Markers
+          Namespaces:
+            lines: true
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /robot_1/perception/wire_perception/wire_tracking/tracking_3d_viz
+          Value: true
+        - Class: rviz_default_plugins/PointCloud2
+          Enabled: true
+          Name: Wire Detection Depth
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /robot_1/perception/wire_perception/wire_detection/depth_pointcloud
           Value: true
       Enabled: true
       Name: Perception
@@ -707,9 +744,9 @@ Window Geometry:
     collapsed: false
   Displays:
     collapsed: false
-  Front Right Depth:
+  Up Right Depth:
     collapsed: false
-  Front Right RGB:
+  Up Right RGB:
     collapsed: false
   Height: 1376
   Hide Left Dock: false

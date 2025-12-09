@@ -128,6 +128,7 @@ RUN pip3 install \
   tqdm \
   pillow \ 
   flow_vis \
+  ultralytics \
   h5py \
   evo \
   tabulate \

@@ -22,6 +22,7 @@ sections:
       - --max-cache-size 
       - 1073741824 # 1GB
     topics:
+      # Front stereo camera
       - sensors/front_stereo/left/image_rect
       - sensors/front_stereo/right/image_rect
       - sensors/front_stereo/left/camera_info
@@ -32,3 +33,11 @@ sections:
       - sensors/front_stereo/depth/depth_registered
       - sensors/front_stereo/imu/data
       - sensors/front_stereo/imu/data_raw
+      
+      # Up stereo camera (for wire detection)
+      - sensors/up_stereo/left/image_rect
+      - sensors/up_stereo/right/image_rect
+      - sensors/up_stereo/left/camera_info
+      - sensors/up_stereo/right/camera_info
+      - sensors/up_stereo/left/depth_ground_truth
+      - sensors/up_stereo/right/depth_ground_truth

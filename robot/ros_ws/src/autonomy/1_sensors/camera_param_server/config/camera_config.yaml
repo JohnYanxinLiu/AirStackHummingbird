@@ -3,5 +3,11 @@ camera_list:
   - camera_name: "front_stereo"
     camera_type: "stereo"
     camera_info_sub_topic: "camera_info"
-    left_camera_frame_id: "front_stereo_left_camera_optical_frame" 
-    right_camera_frame_id: "front_stereo_right_camera_optical_frame"
+    left_camera_frame_id: "down_stereo_left_camera_optical_frame" 
+    right_camera_frame_id: "down_stereo_right_camera_optical_frame"
+  
+  - camera_name: "up_stereo"
+    camera_type: "stereo"
+    camera_info_sub_topic: "camera_info"
+    left_camera_frame_id: "up_stereo_left_camera_optical_frame"
+    right_camera_frame_id: "up_stereo_right_camera_optical_frame"
