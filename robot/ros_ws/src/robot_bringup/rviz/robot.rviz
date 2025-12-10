@@ -458,6 +458,39 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /robot_1/perception/wire_perception/wire_tracking/tracking_3d_viz
           Value: true
+        - Class: rviz_default_plugins/Marker
+          Enabled: true
+          Name: Wire Approach Target
+          Namespaces:
+            wire_approach: true
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /robot_1/wire_approach/wire_approach_planner/target_marker
+          Value: true
+        - Class: rviz_default_plugins/Pose
+          Alpha: 1.0
+          Axes Length: 0.5
+          Axes Radius: 0.05
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.2
+          Head Radius: 0.1
+          Name: Wire Approach Target Pose
+          Shaft Length: 0.5
+          Shaft Radius: 0.05
+          Shape: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /robot_1/wire_approach/wire_approach_planner/target_pose
+          Value: true
         - Class: rviz_default_plugins/PointCloud2
           Enabled: true
           Name: Wire Detection Depth

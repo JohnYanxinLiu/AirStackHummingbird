@@ -36,9 +36,9 @@
 
     <!-- Wire Approach Planner -->
     <include file="$(find-pkg-share wire_approach_planner)/launch/wire_approach_planner.launch.xml">
-        <arg name="wire_target_topic" value="/$(env ROBOT_NAME)/perception/wire_perception/wire_target" />
-        <arg name="odometry_topic" value="$(var local_odometry_in_topic)" />
-        <arg name="trajectory_segment_topic" value="/$(env ROBOT_NAME)/trajectory_controller/trajectory_segment_to_add" />
+        <arg name="wire_detections_topic" value="/$(env ROBOT_NAME)/perception/wire_perception/wire_detections" />
+        <arg name="odometry_topic" value="/$(env ROBOT_NAME)/odometry_conversion/odometry" />
+        <arg name="trajectory_override_topic" value="/$(env ROBOT_NAME)/trajectory_controller/trajectory_override" />
     </include>
 
     <group>
